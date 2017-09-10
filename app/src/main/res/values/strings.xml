@@ -1,0 +1,33 @@
+<resources>
+    <string name="app_name">Todolist</string>
+    <string name="title_activity_navi_drawer">NaviDrawerActivity</string>
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+
+    <string name="action_settings">Settings</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+
+    //////////////////////////////////////////////////////////////////////////////
+    <string name="title_activity_welcome">Home Screen</string>
+    <string name="next">NEXT</string>
+    <string name="skip">SKIP</string>
+    <string name="start">GOT IT</string>
+
+    <string name="slide_1_title">Sort Your Life Out </string>
+    <string name="slide_1_desc">We Bring You A Todo App thats not that complicated but just made right to suit you</string>
+
+    <string name="slide_2_title">Categories</string>
+    <string name="slide_2_desc">Everything can be Organised with Categories </string>
+
+    <string name="slide_3_title">Goals ! Goals ! Goals ! </string>
+    <string name="slide_3_desc">Complete Your Goals and Level Up </string>
+
+    <string name="slide_4_title">Permissions Please</string>
+    <string name="slide_4_desc"></string>
+
+    <string name="play_again_desc">To see the welcome slider again, goto Settings -> apps -> welcome slider -> clear data</string>
+    <string name="play_again">Play Again</string>
+</resources>
