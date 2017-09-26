@@ -54,22 +54,21 @@
                 <category android:name="android.intent.category.LAUNCHER" />
 
             </intent-filter>
-
         </activity>
 
 
         <activity android:name=".NewUserForm" />
         <activity android:name=".Introslider.Welcome" />
-        <activity android:name=".AddNewCategory"></activity>
+        <activity android:name=".AddNewCategory">
+
+        </activity>
         <activity
             android:name=".Tasks"
             android:windowSoftInputMode="stateHidden">
 
         </activity>
-
-
-
-        <activity android:name=".AddNewTask"></activity>
+        <activity android:name=".AddNewTask">
+        </activity>
         <activity android:name=".AllTasks"></activity>
 
         <service

@@ -77,7 +77,7 @@
             android:layout_marginLeft="11dp"
             android:layout_marginRight="11dp"
             android:layout_alignParentRight="true"
-            android:backgroundTint="@color/blue"
+            app:backgroundTint="@color/blue"
             fab:menu_backgroundColor="@android:color/transparent"
             android:src="@drawable/fab_add"
             fab:fab_label="Add a Task"

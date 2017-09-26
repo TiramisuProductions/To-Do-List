@@ -86,7 +86,7 @@ public class AllTasks extends AppCompatActivity {
                         for (DataSnapshot snapshot1 : snapshot.child("Tasks").getChildren()) {
                             taskCounter++;
                             AllTasksModel allTasksModel = new AllTasksModel(snapshot.getKey().toString(), snapshot1.getKey().toString(), snapshot1.child("done").getValue().toString()
-                                    , snapshot1.child("dueDate").getValue().toString(), snapshot1.child("reminder").getValue().toString(), snapshot1.child("taskName").getValue().toString());
+                                    , snapshot1.child("dueDate").getValue().toString(),snapshot1.child("dueTime").getValue().toString(), snapshot1.child("reminder").getValue().toString(), snapshot1.child("taskName").getValue().toString());
 
                             if (allTasksModel.getDone().equals("true")) {
                                 selectedlist.add(allTasksModel);

@@ -89,7 +89,7 @@ public class Tasks extends AppCompatActivity {
                 for(DataSnapshot snapshot : dataSnapshot.getChildren())
                 {
 
-                    TaskModel taskModel = new TaskModel( snapshot.getKey(),snapshot.child("taskName").getValue().toString(),snapshot.child("dueDate").getValue().toString(),snapshot.child("reminder").getValue().toString(),snapshot.child("done").getValue().toString());
+                    TaskModel taskModel = new TaskModel( snapshot.getKey(),snapshot.child("taskName").getValue().toString(),snapshot.child("dueDate").getValue().toString(),snapshot.child("dueTime").getValue().toString(),snapshot.child("reminder").getValue().toString(),snapshot.child("done").getValue().toString());
                     if(taskModel.getDone().equals("true"))
                     {
                         Log.d("Done","Done");

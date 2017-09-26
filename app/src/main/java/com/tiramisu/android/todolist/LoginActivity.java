@@ -82,7 +82,7 @@ public class LoginActivity extends AppCompatActivity {
         passWord=(EditText) findViewById(R.id.password);
 
         FirebaseApp.initializeApp(this);
-        FirebaseDatabase.getInstance().setPersistenceEnabled(true);
+//        FirebaseDatabase.getInstance().setPersistenceEnabled(true);
 
         mAuth=FirebaseAuth.getInstance();
         UserRef = FirebaseDatabase.getInstance().getReference("Users");

@@ -1,26 +1,29 @@
 package com.tiramisu.android.todolist.Model;
 
-/**
- * Created by Sarvesh Palav on 25-09-2017.
- */
 
+ /*Model for All category*/
 public class AllTasksModel {
-    String catId;
-    String taskId;
-    String done;
-    String dueDate;
-    String reminder;
-    String taskName;
+    String catId;    //Id of each category
+    String taskId;   //Id of each each task
+    String done;     //Boolean to check if task is selected
+    String dueDate;  //Date set to each task
+     String dueTime;     //Time set to each task
+    String reminder; //
+    String taskName; //Name of each task
 
 
-    public AllTasksModel(String catId, String taskId, String done, String dueDate, String reminder, String taskName) {
+    public AllTasksModel(String catId, String taskId, String done, String dueDate,String dueTime, String reminder, String taskName) {
         this.catId = catId;
         this.taskId = taskId;
         this.done = done;
         this.dueDate = dueDate;
+        this.dueTime=dueTime;
         this.reminder = reminder;
         this.taskName = taskName;
     }
+
+
+
 
     public String getCatId() {
         return catId;
@@ -53,6 +56,10 @@ public class AllTasksModel {
     public void setDueDate(String dueDate) {
         this.dueDate = dueDate;
     }
+
+     public String getDueTime() {return dueTime;}
+
+     public void setDueTime(String dueTime) {this.dueTime = dueTime;}
 
     public String getReminder() {
         return reminder;

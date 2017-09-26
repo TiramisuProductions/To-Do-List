@@ -3,9 +3,9 @@ package com.tiramisu.android.todolist.Model;
 
 public class Details {
 
-    private String id;
-    private String name;
-    private String username;
+    private String id;        //Database unique user id
+    private String name;      //Full name of the user
+    private String username;  //Unique username
     private String gender;
 
 

@@ -48,7 +48,7 @@ public  class AddNewTask extends AppCompatActivity implements TimePickerDialog.O
     int counter =0;
     private Button today,tomorrow,upcoming,custom;
     private RelativeLayout search_linear;
-    long duetime,date;
+    String duetime="temp",date="temp"; //dueTime and dueDate is asigned
 
     boolean button1=false,button2=false,button3=false,button4=false,time=false;
     SimpleDateFormat myFormat = new SimpleDateFormat("dd/MM/yyyy");
@@ -134,13 +134,17 @@ public  class AddNewTask extends AppCompatActivity implements TimePickerDialog.O
                 {
                     String key_id1 = CategoryRef.push().getKey();
                     CategoryRef.child("All").child("Category_Name").setValue("All");
-                    TaskModel taskModel = new TaskModel(taskName,"temp","temp","false");
+                    TaskModel taskModel = new TaskModel(taskName,date,duetime,"temp","false");
                     CategoryRef.child("All").child("Tasks").child(key_id1).setValue(taskModel);
+                    Log.d("hello",""+date);
+                    Log.d("hello1",""+duetime);
                 }
                 else{
                     String key_id1 = CategoryRef.push().getKey();
-                    TaskModel taskModel = new TaskModel(taskName,"temp","temp","false");
+                    TaskModel taskModel = new TaskModel(taskName,date,duetime,"temp","false");
                     CategoryRef.child(getIntent().getStringExtra("category_id")).child("Tasks").child(key_id1).setValue(taskModel);
+                    Log.d("hello",""+date);
+                    Log.d("hello1",""+duetime);
                 }
 
 
@@ -270,22 +274,27 @@ public  class AddNewTask extends AppCompatActivity implements TimePickerDialog.O
     public void onTimeSet(TimePickerDialog view, int hourOfDay, int minute, int second) {
 
         if(button1=true) {
-            duetime =  hourOfDay + minute + second;
+            Calendar c=Calendar.getInstance();
+            duetime= String.valueOf(c.getTimeInMillis());
+            duetime = String.valueOf(hourOfDay + minute + second);
+
         }
 
         if(button2=true)
         {
             Calendar c=Calendar.getInstance();
-            c.getTimeInMillis();
+          duetime= String.valueOf(c.getTimeInMillis());
             int day=c.get(Calendar.DAY_OF_MONTH);
             ++ day;
-            duetime = Long.valueOf("You picked the following time" + hourOfDay + minute + second+ day);
+            duetime = String.valueOf( + hourOfDay + minute + second+ day);
+
 
         }
 
         if(time=true){
-
-            duetime = Long.valueOf(("You picked the following time" + hourOfDay + minute + second));
+            Calendar c=Calendar.getInstance();
+            duetime= String.valueOf(c.getTimeInMillis());
+            duetime = String.valueOf( + hourOfDay + minute + second);,
         }
     }
 
@@ -301,7 +310,7 @@ public  class AddNewTask extends AppCompatActivity implements TimePickerDialog.O
             } catch (ParseException e) {
                 e.printStackTrace();
             }
-            date = D.getTime();
+            date = String.valueOf(D.getTime());
 
 
         }
@@ -314,7 +323,7 @@ public  class AddNewTask extends AppCompatActivity implements TimePickerDialog.O
             } catch (ParseException e) {
                 e.printStackTrace();
             }
-            date = D.getTime();
+            date = String.valueOf(D.getTime());
 
             Calendar now =  Calendar.getInstance();
             TimePickerDialog tpd = TimePickerDialog.newInstance(
