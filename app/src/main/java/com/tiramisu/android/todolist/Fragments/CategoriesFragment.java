@@ -49,9 +49,6 @@ public class CategoriesFragment extends Fragment {
     List<CategoryModel> categoryModelList = new ArrayList<CategoryModel>();
 
 
-
-
-
     public CategoriesFragment() {
         // Required empty public constructor
     }
@@ -133,22 +130,10 @@ public class CategoriesFragment extends Fragment {
             }
         });
 
-
-
-
-
-
-
-
-
         return rootView;
     }
 
-
-
-
-
-    }
+}
 
 
 

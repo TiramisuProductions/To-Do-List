@@ -73,7 +73,7 @@
             android:id="@+id/addButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:backgroundTint="@color/blue"
+            app:backgroundTint="@color/blue"
             android:transitionName="addtask"
             android:layout_alignParentRight="true"
             android:layout_marginBottom="11dp"

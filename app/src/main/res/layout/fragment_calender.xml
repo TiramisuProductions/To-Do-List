@@ -2,12 +2,26 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.tiramisu.android.todolist.Fragments.CalenderFragment">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context="com.tiramisu.android.todolist.Fragments.CalenderFragment"
+    android:background="@color/white">
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
+    <com.imanoweb.calendarview.CustomCalendarView
+        android:id="@+id/calendar_view"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="@string/hello_blank_fragment" />
+        android:layout_height="wrap_content"
+        android:background="#ffffff"
+        app:calendarBackgroundColor="@color/white"
+        app:calendarTitleTextColor="@color/black"
+        app:currentDayOfMonthColor="@color/blue"
+        app:dayOfMonthTextColor="@color/black"
+        app:dayOfWeekTextColor="@color/black"
+        app:disabledDayBackgroundColor="#ff4000"
+        app:disabledDayTextColor="@color/black"
+        app:selectedDayBackgroundColor="@color/blue"
+        app:titleLayoutBackgroundColor="@color/white"
+        app:weekLayoutBackgroundColor="@color/white">
+    </com.imanoweb.calendarview.CustomCalendarView>
+
 
 </FrameLayout>

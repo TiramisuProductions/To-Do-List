@@ -34,22 +34,15 @@ public class AddNewCategory extends AppCompatActivity {
     private ArrayList<CategorySuggestionModel> search_list2 = new ArrayList<>();
     private DatabaseReference CategoryRef;
 
-
-
     public CategorySearchAdapter mAdapter_categorySerach;
 
     DatabaseReference catSuggest;
     int counter = 0;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_new_category);
-
-
-
-
 
         catSuggest = FirebaseDatabase.getInstance().getReference("category_suggetion_list");
         CategoryRef = FirebaseDatabase.getInstance().getReference("Todo/"+ StaticVar.UID + "/Categories");
@@ -62,8 +55,6 @@ public class AddNewCategory extends AppCompatActivity {
 
         suggestionList();
 
-
-
         addTextListener();
 
         done.setOnClickListener(new View.OnClickListener() {
@@ -71,20 +62,11 @@ public class AddNewCategory extends AppCompatActivity {
             public void onClick(View view) {
                 String category = search.getText().toString().trim();
 
-
                 String key_id1 = CategoryRef.push().getKey();
-
-
-
 
                 CategoryRef.child(key_id1).child("Category_Name").setValue(category);
 
-
-
-
                finish();
-
-
             }
         });
     }
