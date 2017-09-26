@@ -17,11 +17,24 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
+
+           <TextView
+               android:id="@+id/category_name"
+               android:textColor="@color/black"
+               android:transitionName="categoryname"
+               android:textSize="35sp"
+               android:layout_width="wrap_content"
+               android:padding="10dp"
+               android:layout_marginBottom="10dp"
+               android:layout_height="wrap_content" />
+
+
+
             <android.support.v7.widget.RecyclerView
-                android:id="@+id/recyclerView_task"
+                android:id="@+id/recyclerView_task2"
                 android:layout_width="match_parent"
                 android:layout_weight="1"
-                android:layout_height="0dp"
+                android:layout_height="wrap_content"
                 android:orientation="vertical"
 
 
@@ -32,10 +45,10 @@
 
             <android.support.v7.widget.RecyclerView
 
-                android:id="@+id/recyclerView_task2"
-                android:layout_below="@+id/recyclerView_task"
+                android:id="@+id/recyclerView_task"
+                android:layout_below="@+id/recyclerView_task2"
                 android:layout_width="match_parent"
-                android:layout_height="0dp"
+                android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:orientation="vertical"
 
@@ -47,30 +60,39 @@
         </LinearLayout>
     </ScrollView>
 
-    <LinearLayout
+    <RelativeLayout
         android:layout_alignParentRight="true"
         android:layout_alignParentBottom="true"
         android:gravity="bottom"
-        android:layout_width="wrap_content"
+        android:orientation="vertical"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
 
-        <android.support.design.widget.FloatingActionButton
+      <android.support.design.widget.FloatingActionButton
             android:id="@+id/addButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:backgroundTint="@color/blue"
+            android:transitionName="addtask"
+            android:layout_alignParentRight="true"
             android:layout_marginBottom="11dp"
             android:layout_marginLeft="11dp"
             android:layout_marginRight="11dp"
-            fab:fab_colorNormal="@color/blue"
             fab:menu_backgroundColor="@android:color/transparent"
             android:src="@drawable/fab_add"
             fab:fab_label="Add a Task"
             fab:fabSize="normal"
-
             />
 
-    </LinearLayout>
+
+
+
+
+
+
+
+    </RelativeLayout>
 
 
 

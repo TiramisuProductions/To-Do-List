@@ -1,9 +1,13 @@
 package com.tiramisu.android.todolist;
 
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -11,6 +15,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
 
@@ -38,6 +43,9 @@ import com.tiramisu.android.todolist.Introslider.Welcome;
 import com.tiramisu.android.todolist.Model.UserUID;
 import com.tiramisu.android.todolist.service.FirebaseBackgroundService;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 public class LoginActivity extends AppCompatActivity {
 
     private SignInButton mGooglebtn;
@@ -63,6 +71,7 @@ public class LoginActivity extends AppCompatActivity {
     private DatabaseReference UserRef;
     private int UserCounter;
     private  boolean userfound;
+     @BindView(R.id.loginlayout) LinearLayout loginLayout;
 
 
     @Override
@@ -73,11 +82,15 @@ public class LoginActivity extends AppCompatActivity {
         passWord=(EditText) findViewById(R.id.password);
 
         FirebaseApp.initializeApp(this);
+        FirebaseDatabase.getInstance().setPersistenceEnabled(true);
 
         mAuth=FirebaseAuth.getInstance();
         UserRef = FirebaseDatabase.getInstance().getReference("Users");
+        UserRef.keepSynced(false);
 
-      //  startService(new Intent(this,FirebaseBackgroundService.class));
+        ButterKnife.bind(this);
+
+
         if (mAuth.getCurrentUser() !=null){
 
 
@@ -120,7 +133,17 @@ public class LoginActivity extends AppCompatActivity {
         mGooglebtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                signIn();
+
+                if(isNetworkAvailable())
+                {
+                    signIn();
+                }
+                else
+                {
+                    Snackbar snack = Snackbar.make(loginLayout,"You are  not Connected to the Internet", Snackbar.LENGTH_LONG);
+                    snack.show();
+                }
+
 
             }
         });
@@ -196,6 +219,7 @@ public class LoginActivity extends AppCompatActivity {
                                 userfound = true;
 
                                 Intent i = new Intent(LoginActivity.this,Home.class);
+                                Log.d("MyUid",uid.getUID());
                                 i.putExtra("uid",uid.getUID());
 
                                 startActivity(i);
@@ -297,6 +321,14 @@ public class LoginActivity extends AppCompatActivity {
                 });
 
 
+    }
+
+
+    private boolean isNetworkAvailable() {
+        ConnectivityManager connectivityManager
+                = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+        return activeNetworkInfo != null && activeNetworkInfo.isConnected();
     }
 
 

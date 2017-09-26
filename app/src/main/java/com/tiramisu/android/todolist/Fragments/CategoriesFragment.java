@@ -16,20 +16,23 @@ import android.widget.Toast;
 
 import com.github.clans.fab.FloatingActionButton;
 import com.github.clans.fab.FloatingActionMenu;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.tiramisu.android.todolist.Adapter.CategoriesAdapter;
-import com.tiramisu.android.todolist.Add_new_category;
-import com.tiramisu.android.todolist.Model.Category;
-import com.tiramisu.android.todolist.Model.WorldEvent;
+import com.tiramisu.android.todolist.AddNewCategory;
+import com.tiramisu.android.todolist.AddNewTask;
+import com.tiramisu.android.todolist.Model.CategoryModel;
+import com.tiramisu.android.todolist.Model.StaticVar;
 import com.tiramisu.android.todolist.R;
 import com.tiramisu.android.todolist.Tasks;
 
-import org.greenrobot.eventbus.EventBus;
-import org.greenrobot.eventbus.Subscribe;
-
 import java.util.ArrayList;
+import java.util.List;
 
-import static com.tiramisu.android.todolist.Model.StaticVar.categorylist;
+
 
 /**
  * A simple {@link Fragment} subclass.
@@ -39,24 +42,15 @@ public class CategoriesFragment extends Fragment {
     private Context mContext;
     RelativeLayout mRelativeLayout;
     private RecyclerView mRecyclerView;
-    private RecyclerView.Adapter mAdapter;
-    private RecyclerView.LayoutManager mLayoutManager;
-
     FloatingActionMenu materialDesignFAM;
     FloatingActionButton floatingActionButton1, floatingActionButton2;
-
-    // DatabaseReference databaseReference;
-    private ArrayList<String> categoryNamelist = new ArrayList<String>();
-    private ArrayList<String> categoryIdlist = new ArrayList<String>();
-    private ArrayList<String> taskFolderIdlist = new ArrayList<String>();
-
-
     int CategoryCounter = 0;
-    int no_of_categories = 0;
-    int taskcounter = 0;
-    private ArrayList<String> hello = new ArrayList<String>();
+    DatabaseReference todoref,categoryref;
+    List<CategoryModel> categoryModelList = new ArrayList<CategoryModel>();
 
-    DatabaseReference categoryreference,todoref;
+
+
+
 
     public CategoriesFragment() {
         // Required empty public constructor
@@ -68,8 +62,12 @@ public class CategoriesFragment extends Fragment {
         View rootView = inflater.inflate(R.layout.fragment_categories, container, false);
         mContext = getContext();
 
+        RecyclerView.LayoutManager mLayoutManager = new GridLayoutManager(getActivity().getApplicationContext(),2);
+
+
         mRelativeLayout = (RelativeLayout) rootView.findViewById(R.id.rl);
         mRecyclerView = (RecyclerView) rootView.findViewById(R.id.recycler_Categories);
+        mRecyclerView.setLayoutManager(mLayoutManager);
 
         materialDesignFAM = (FloatingActionMenu)rootView.findViewById(R.id.material_design_android_floating_action_menu);
         floatingActionButton1 = (FloatingActionButton)rootView.findViewById(R.id.material_design_floating_action_menu_item1);
@@ -79,42 +77,64 @@ public class CategoriesFragment extends Fragment {
         floatingActionButton1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Toast.makeText(mContext, "Button 1", Toast.LENGTH_SHORT).show();
 
-                startActivity(new Intent(getActivity(), Add_new_category.class));
+                startActivity(new Intent(getActivity(), AddNewCategory.class));
             }
         });
 
         floatingActionButton2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent= new Intent (getActivity(),Tasks.class);
-
+                Intent intent= new Intent (getActivity(),AddNewTask.class);
+                intent.putExtra("alltasks",true);
                 startActivity(intent);
+            }
+        });
 
-                Toast.makeText(mContext, "Button 2", Toast.LENGTH_SHORT).show();
+        todoref = FirebaseDatabase.getInstance().getReference("Todo");
+        todoref.keepSynced(true);
+        categoryref = todoref.child(""+ StaticVar.UID+"/Categories");
+        categoryref.keepSynced(true);
+
+
+
+
+
+
+        categoryref.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                categoryModelList.clear();
+                categoryModelList.add(new CategoryModel("ALL","All"));
+                for(DataSnapshot snapshot : dataSnapshot.getChildren())
+                {
+
+                    CategoryCounter++;
+                    CategoryModel categoryModel = new CategoryModel(snapshot.getKey(),snapshot.child("Category_Name").getValue().toString());
+                    if(!categoryModel.getName().equals("All"))
+                    {
+                        categoryModelList.add(categoryModel);
+                    }
+
+                    if(CategoryCounter==dataSnapshot.getChildrenCount())
+                    {
+                        CategoryCounter=0;
+                        CategoriesAdapter categoriesAdapter = new CategoriesAdapter(getActivity(),categoryModelList);
+                        mRecyclerView.setAdapter(categoriesAdapter);
+
+                    }
+
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
             }
         });
 
 
-        /*String[] names={
-                "Pranal",
-                "Sid"   };
-        */
 
-        // Category.deleteAll(Category.class); //clear database
-
-//        categoryreference = FirebaseDatabase.getInstance().getReference("Todo");
-//        todoref = categoryreference.child("FOzpt21IejaDk20Sq8tBEO0bVVC3/Categories");
-
-        EventBus.getDefault().register(this);
-        categorylist= Category.listAll(Category.class);
-        Log.d("size", String.valueOf(categorylist.size()));
-        mLayoutManager = new GridLayoutManager(mContext, 2);
-        mRecyclerView.setLayoutManager(mLayoutManager);
-        mAdapter=new CategoriesAdapter(mContext,categorylist);
-        mRecyclerView.setAdapter(mAdapter);
-        categoriesUpdate();
 
 
 
@@ -123,15 +143,7 @@ public class CategoriesFragment extends Fragment {
 
         return rootView;
     }
-    @Subscribe
-    public void onEvent(WorldEvent event){
-        getActivity().runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                categoriesUpdate();
 
-            }
-        });
 
 
 
@@ -141,15 +153,9 @@ public class CategoriesFragment extends Fragment {
 
 
 
-    public void categoriesUpdate(){
-        categorylist= Category.listAll(Category.class);
-        mAdapter=new CategoriesAdapter(mContext,categorylist);
-        mRecyclerView.setAdapter(mAdapter);
 
 
-    }
 
-}
 
 
 

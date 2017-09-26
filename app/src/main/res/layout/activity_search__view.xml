@@ -4,58 +4,48 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.tiramisu.android.todolist.Search_View"
+    tools:context="com.tiramisu.android.todolist.AddNewTask"
     android:background="@color/white"
     >
 
 
     <EditText
-        android:id="@+id/search"
+        android:id="@+id/addtask"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical"
         android:maxLines="1"
         android:inputType="text"
+        android:transitionName="addtask"
         android:textColor="@color/black"
-        android:hint="Add Here"
+        android:hint="Add A  Task"
         android:layout_marginTop="20dp"
         />
-    <View
-        android:id="@+id/border"
-        android:layout_width="fill_parent"
-        android:layout_height="1dp"
-        android:layout_marginLeft="15dp"
-        android:layout_marginRight="15dp"
-        android:layout_below="@+id/search"
-        android:layout_marginTop="14dp"
-        android:background="#d3d3d3"/>
+
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/search_recycler"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:padding="8dp"
-        android:layout_below="@+id/border"
+        android:layout_below="@+id/addtask"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
         android:layout_marginTop="21dp" />
 
 
-    <Button
-        android:id="@+id/enter"
+    <ImageView
+        android:id="@+id/done"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:background="#cfd8dc"
-        android:textColor="@color/black"
-        android:text="Done"
-        android:layout_alignTop="@+id/search"
+        android:src="@drawable/ic_check_black_24dp"
+        android:layout_alignTop="@+id/addtask"
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true" />
 
 
     <RelativeLayout
         android:id="@+id/search_ll"
-        android:visibility="invisible"
         android:layout_alignParentBottom="true"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
@@ -63,6 +53,9 @@
         <Button
             android:id="@+id/today"
             android:text="Today"
+            android:layout_margin="2dp"
+            android:textColor="@color/black"
+            android:background="@drawable/transparent_btn"
             android:layout_alignParentStart="true"
             android:layout_alignParentLeft="true"
             android:layout_width="wrap_content"
@@ -70,21 +63,30 @@
         <Button
             android:id="@+id/tomorrow"
             android:text="Tomorrow"
+            android:layout_margin="2dp"
             android:layout_toRightOf="@+id/today"
+            android:textColor="@color/black"
+            android:background="@drawable/transparent_btn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
         <Button
             android:id="@+id/upcoming"
             android:text="Upcoming"
+            android:layout_margin="2dp"
             android:layout_toRightOf="@+id/tomorrow"
+            android:textColor="@color/black"
+            android:background="@drawable/transparent_btn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
 
         <Button
             android:id="@+id/custom"
+            android:layout_margin="2dp"
             android:layout_alignParentEnd="true"
             android:layout_alignParentRight="true"
             android:layout_toRightOf="@+id/upcoming"
+            android:textColor="@color/black"
+            android:background="@drawable/transparent_btn"
             android:text="Custom"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
