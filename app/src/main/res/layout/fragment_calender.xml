@@ -6,22 +6,13 @@
     tools:context="com.tiramisu.android.todolist.Fragments.CalenderFragment"
     android:background="@color/white">
 
-    <com.imanoweb.calendarview.CustomCalendarView
-        android:id="@+id/calendar_view"
+    <RelativeLayout
+        android:id="@+id/calender1"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="#ffffff"
-        app:calendarBackgroundColor="@color/white"
-        app:calendarTitleTextColor="@color/black"
-        app:currentDayOfMonthColor="@color/blue"
-        app:dayOfMonthTextColor="@color/black"
-        app:dayOfWeekTextColor="@color/black"
-        app:disabledDayBackgroundColor="#ff4000"
-        app:disabledDayTextColor="@color/black"
-        app:selectedDayBackgroundColor="@color/blue"
-        app:titleLayoutBackgroundColor="@color/white"
-        app:weekLayoutBackgroundColor="@color/white">
-    </com.imanoweb.calendarview.CustomCalendarView>
+        android:layout_height="match_parent">
+
+
+    </RelativeLayout>
 
 
 </FrameLayout>
