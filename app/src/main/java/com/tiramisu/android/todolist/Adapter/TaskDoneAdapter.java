@@ -9,39 +9,56 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
+import android.widget.ImageView;
 import android.widget.TextView;
-import com.tiramisu.android.todolist.Model.Task;
+
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.tiramisu.android.todolist.Model.StaticVar;
+import com.tiramisu.android.todolist.Model.TaskModel;
 import com.tiramisu.android.todolist.R;
 import com.tiramisu.android.todolist.Tasks;
-import com.tiramisu.android.todolist.Model.WorldEvent;
-import org.greenrobot.eventbus.EventBus;
+
 import java.util.List;
 
-public class TaskAdapter2 extends RecyclerView.Adapter<TaskAdapter2.MyView> {
+public class TaskDoneAdapter extends RecyclerView.Adapter<TaskDoneAdapter.MyView> {
     private Context context;
-    private List<Task> list;
+    private List<TaskModel> list;
     private Tasks tasks;
+    DatabaseReference todoref,categoryref;
 
-    public TaskAdapter2(Context context , List<Task> list) {
+    public TaskDoneAdapter(Context context , List<TaskModel> list) {
         this.list=list;
         this.context=context;
     }
     @Override
-    public TaskAdapter2.MyView onCreateViewHolder(ViewGroup parent, int viewType) {
+    public TaskDoneAdapter.MyView onCreateViewHolder(ViewGroup parent, int viewType) {
         View layoutView = LayoutInflater.from(parent.getContext()).inflate(R.layout.custom_task,parent,false);
 
         return new MyView(layoutView);
     }
 
     @Override
-    public void onBindViewHolder(final TaskAdapter2.MyView holder, final int position) {
-        final Task list1 =list.get(position);
+    public void onBindViewHolder(final TaskDoneAdapter.MyView holder, final int position) {
+        final TaskModel list1 =list.get(position);
 
 
 
         holder.checkBox.setChecked(true);
-        holder.text.setText(list1.taskname);
+        holder.text.setText(list1.getTaskName());
         holder.text.setPaintFlags(holder.text.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+
+holder.delete.setOnClickListener(new View.OnClickListener() {
+    @Override
+    public void onClick(View v) {
+        todoref = FirebaseDatabase.getInstance().getReference("Todo");
+        categoryref = todoref.child(""+StaticVar.UID+"/Categories");
+        categoryref.child(StaticVar.CATEGORY_ID).child("Tasks").child(list1.getId()).removeValue();
+        list.remove(position);
+        notifyDataSetChanged();
+    }
+});
+
 
         holder.checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
@@ -49,10 +66,9 @@ public class TaskAdapter2 extends RecyclerView.Adapter<TaskAdapter2.MyView> {
 
                 if(!isChecked)
                 {
-                    Task task = Task.findById(Task.class, list1.getId());
-                    task.setIsdone(false);
-                    task.save();
-                    EventBus.getDefault().post(new WorldEvent("Hello EventBus!"));
+                    todoref = FirebaseDatabase.getInstance().getReference("Todo");
+                    categoryref = todoref.child(""+StaticVar.UID+"/Categories");
+                    categoryref.child(StaticVar.CATEGORY_ID).child("Tasks").child(list1.getId()).child("done").setValue("false");
                 }
             }
         });
@@ -66,13 +82,14 @@ public class TaskAdapter2 extends RecyclerView.Adapter<TaskAdapter2.MyView> {
 
     public class MyView extends RecyclerView.ViewHolder {
         public CheckBox checkBox;
-        public TextView dataID;
+        public ImageView delete;
         public TextView text;
 
         public MyView(View itemView) {
             super(itemView);
             checkBox=(CheckBox)itemView.findViewById(R.id.checkbox);
             text=(TextView)itemView.findViewById(R.id.taskName);
+            delete = (ImageView)itemView.findViewById(R.id.del);
         }
     }
 }

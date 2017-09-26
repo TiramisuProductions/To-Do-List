@@ -11,6 +11,7 @@
     <color name="bg2">#616161</color>
     <color name="blue">#FF3395FF</color>
     <color name="black">#000</color>
+    <color name="light_grey">#bdbdbd</color>
 
 
     <color name="bg_screen1">#f64c73</color>

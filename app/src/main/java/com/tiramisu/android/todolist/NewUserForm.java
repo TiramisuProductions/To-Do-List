@@ -25,6 +25,7 @@ import com.tiramisu.android.todolist.Model.Details;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.tiramisu.android.todolist.Model.KEYS;
+import com.tiramisu.android.todolist.Model.TaskModel;
 import com.tiramisu.android.todolist.Model.UserUID;
 
 import butterknife.BindView;
@@ -331,23 +332,19 @@ public class NewUserForm extends AppCompatActivity {
         refFirst.child("Todo").child(Uid).child("Details").child(key_id1).setValue(details);
         long millis = System.currentTimeMillis();
         Log.d("lastupdated",String.valueOf(millis));
-        refFirst.child("Todo").child(Uid).child("Last_Updated").setValue(millis);
+
         //category 1,task1
-        refFirst.child("Todo").child(Uid).child("Categories").child(key_id2).child("Category Name").setValue(Category_Name1);
-        TaskDetails taskDetails1 = new TaskDetails("none",name1,false);
-        refFirst.child("Todo").child(Uid).child("Categories").child(key_id2).child("Tasks").child(key_task_grp1).child(key_id3).setValue(taskDetails1);
+        refFirst.child("Todo").child(Uid).child("Categories").child(key_id2).child("Category_Name").setValue(Category_Name1);
+
 
         //task2
-        TaskDetails taskDetailsz = new TaskDetails("none",namez,false);
-        refFirst.child("Todo").child(Uid).child("Categories").child(key_id2).child("Tasks").child(key_id6).setValue(taskDetailsz);
+
 
         //category 2,task1
-        refFirst.child("Todo").child(Uid).child("Categories").child(key_id4).child("Category Name").setValue(Category_Name2);
-        TaskDetails taskDetails2 = new TaskDetails("none",name2,false);
-        refFirst.child("Todo").child(Uid).child("Categories").child(key_id4).child("Tasks").child(key_id5).setValue(taskDetails2);
+        refFirst.child("Todo").child(Uid).child("Categories").child(key_id4).child("Category_Name").setValue(Category_Name2);
 
-        editor.putString(KEYS.LASTUPDATED,"0");
-        editor.commit();
+
+
 
 
     }

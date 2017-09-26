@@ -6,32 +6,28 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.BaseAdapter;
 import android.widget.EditText;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.tiramisu.android.todolist.Model.AutoFill;
+import com.tiramisu.android.todolist.Model.TaskSuggestionModel;
 import com.tiramisu.android.todolist.R;
 
 import java.util.ArrayList;
-import java.util.List;
-import java.util.Locale;
 
 
-
-public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.MyView> {
-    private ArrayList<String> items ;
+public class TaskSearchAdapter extends RecyclerView.Adapter<TaskSearchAdapter.MyView> {
+    private ArrayList<TaskSuggestionModel> items ;
     Context mcontext;
-    public SearchAdapter(ArrayList<String> list,Context context) {
+    public TaskSearchAdapter(ArrayList<TaskSuggestionModel> list, Context context) {
 
         items=list;
         mcontext = context;
     }
 
     @Override
-    public SearchAdapter.MyView onCreateViewHolder(ViewGroup parent, int viewType) {
+    public TaskSearchAdapter.MyView onCreateViewHolder(ViewGroup parent, int viewType) {
         View layoutView = LayoutInflater.from(parent.getContext()).inflate(R.layout.items,parent,false);
 
 
@@ -41,15 +37,15 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.MyView> {
 
     @Override
     public void onBindViewHolder(MyView holder, final int position) {
-        holder.category_name.setText(items.get(position));
+        holder.category_name.setText(items.get(position).getSuggestion());
         holder.category_name.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
                 Toast.makeText(mcontext, ""+items.get(position),Toast.LENGTH_LONG).show();
 
-                EditText txt = (EditText) ((Activity)mcontext).findViewById(R.id.search);
-                txt.setText(items.get(position));
+                EditText txt = (EditText) ((Activity)mcontext).findViewById(R.id.addtask);
+                txt.setText(items.get(position).getSuggestion());
 
             }
         });

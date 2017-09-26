@@ -8,9 +8,11 @@ import java.util.List;
 
 
 public class StaticVar {
-    public static List<Task> list = new ArrayList<>();
-    public static  Context context;
-    public static List<Category> categorylist = new ArrayList<>();
+
+    public static  String UID;
+    public  static String CATEGORY_ID;
+
+    public static  boolean needtoupdate;
 
 
 

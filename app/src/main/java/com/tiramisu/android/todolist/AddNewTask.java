@@ -11,6 +11,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
 
@@ -19,10 +20,11 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.tiramisu.android.todolist.Adapter.SearchAdapter;
-import com.tiramisu.android.todolist.Model.AutoFill;
-import com.tiramisu.android.todolist.Model.CatSuggested;
-import com.tiramisu.android.todolist.Model.Task;
+import com.tiramisu.android.todolist.Adapter.CategorySearchAdapter;
+import com.tiramisu.android.todolist.Adapter.TaskSearchAdapter;
+import com.tiramisu.android.todolist.Model.StaticVar;
+import com.tiramisu.android.todolist.Model.TaskModel;
+import com.tiramisu.android.todolist.Model.TaskSuggestionModel;
 import com.wdullaer.materialdatetimepicker.date.DatePickerDialog;
 import com.wdullaer.materialdatetimepicker.time.TimePickerDialog;
 
@@ -31,43 +33,45 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.List;
 
 
-public  class Search_View extends AppCompatActivity implements TimePickerDialog.OnTimeSetListener,DatePickerDialog.OnDateSetListener{
+public  class AddNewTask extends AppCompatActivity implements TimePickerDialog.OnTimeSetListener,DatePickerDialog.OnDateSetListener{
 
     RecyclerView recyclerView;
-    DatabaseReference mDatabase,auto;
     private EditText editSearch;
-    private RecyclerView.Adapter mAdapter;
-    private Button Enter;
-    public List<AutoFill> autofillist=new ArrayList<>();
-    DatabaseReference searchlist;
+    private TaskSearchAdapter taskSearchAdapter;
+    private ImageView done;
+    DatabaseReference taskSugeestionRef;
     private ArrayList<String> search_list = new ArrayList<String>();
     private ArrayList<String> search_list2 = new ArrayList<String>();
+    private ArrayList<TaskSuggestionModel> taskSuggestionList = new ArrayList<>();
     int counter =0;
     private Button today,tomorrow,upcoming,custom;
     private RelativeLayout search_linear;
     long duetime,date;
-    long catid;
+
     boolean button1=false,button2=false,button3=false,button4=false,time=false;
     SimpleDateFormat myFormat = new SimpleDateFormat("dd/MM/yyyy");
+    private DatabaseReference CategoryRef;
 
-    public Search_View() {}
+
+    public AddNewTask() {}
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search__view);
-        catid = getIntent().getLongExtra("id",1);
-        CatSuggested.deleteAll(CatSuggested.class);
 
-        searchlist= FirebaseDatabase.getInstance().getReference("category_suggetion_list");
+
+
+        CategoryRef = FirebaseDatabase.getInstance().getReference("Todo/"+ StaticVar.UID + "/Categories");
+
+        taskSugeestionRef= FirebaseDatabase.getInstance().getReference("category_suggetion_list");
 
         search_linear=(RelativeLayout) findViewById(R.id.search_ll);
 
-        Enter=(Button)findViewById(R.id.enter);
-        editSearch = (EditText) findViewById(R.id.search);
+        done=(ImageView) findViewById(R.id.done);
+        editSearch = (EditText) findViewById(R.id.addtask);
         today=(Button)findViewById(R.id.today);
         tomorrow=(Button)findViewById(R.id.tomorrow);
         upcoming=(Button)findViewById(R.id.upcoming);
@@ -76,7 +80,7 @@ public  class Search_View extends AppCompatActivity implements TimePickerDialog.
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-        suggestionList();
+
 
         addTextListener();
         editSearch.setOnClickListener(new View.OnClickListener() {
@@ -86,23 +90,56 @@ public  class Search_View extends AppCompatActivity implements TimePickerDialog.
             }
         });
 
-        Enter.setOnClickListener(new View.OnClickListener() {
+
+        taskSugeestionRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                for (DataSnapshot snapshot : dataSnapshot.child("catSugList").getChildren()){
+
+                    counter++;
+                    Log.d("chair8",snapshot.getValue().toString());
+                    //firebase data
+                    taskSuggestionList.add(new TaskSuggestionModel(snapshot.getValue().toString()));
+
+                    long l = dataSnapshot.child("catSugList").getChildrenCount();
+                    Log.d("chair81",""+l);
+
+                    if(counter == dataSnapshot.child("catSugList").getChildrenCount())
+                    {
+
+
+
+
+                        taskSearchAdapter = new TaskSearchAdapter(taskSuggestionList, AddNewTask.this);
+                        recyclerView.setAdapter(taskSearchAdapter);
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
+        done.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
 
-                String task = editSearch.getText().toString().trim();
+                String taskName = editSearch.getText().toString().trim();
 
-                Log.d("freeze",""+catid);
 
-                Task task1 = new Task(catid,task,null,null,0,date,duetime,true);
-                task1.save();
+
+
                 Log.d("hello",""+date);
                 Log.d("hello1",""+duetime);
 
-                Intent intent=new Intent(Search_View.this,Tasks.class);
+                String key_id1 = CategoryRef.push().getKey();
+                TaskModel taskModel = new TaskModel(taskName,"temp","temp","false");
+                CategoryRef.child(getIntent().getStringExtra("category_id")).child("Tasks").child(key_id1).setValue(taskModel);
 
-                startActivity(intent);
+
                 finish();
             }
         });
@@ -114,7 +151,7 @@ public  class Search_View extends AppCompatActivity implements TimePickerDialog.
 
                 Calendar now = Calendar.getInstance();
                 TimePickerDialog tpd = TimePickerDialog.newInstance(
-                        Search_View.this,
+                        AddNewTask.this,
                         now.get(Calendar.HOUR_OF_DAY),
                         now.get(Calendar.MINUTE),
                         false
@@ -131,7 +168,7 @@ public  class Search_View extends AppCompatActivity implements TimePickerDialog.
             public void onClick(View v) {
                 Calendar now = Calendar.getInstance();
                 TimePickerDialog tpd = TimePickerDialog.newInstance(
-                        Search_View.this,
+                        AddNewTask.this,
                         now.get(Calendar.HOUR_OF_DAY),
                         now.get(Calendar.MINUTE),
                         false
@@ -152,7 +189,7 @@ public  class Search_View extends AppCompatActivity implements TimePickerDialog.
                 now.getTimeInMillis();
 
                 com.wdullaer.materialdatetimepicker.date.DatePickerDialog dpd = com.wdullaer.materialdatetimepicker.date.DatePickerDialog.newInstance(
-                        Search_View.this,
+                        AddNewTask.this,
                         now.get(Calendar.YEAR),
                         now.get(Calendar.MONTH),
                         now.get(Calendar.DAY_OF_MONTH)
@@ -173,7 +210,7 @@ public  class Search_View extends AppCompatActivity implements TimePickerDialog.
                 now.getTimeInMillis();
 
                 DatePickerDialog dpd = DatePickerDialog.newInstance(
-                        Search_View.this,
+                        AddNewTask.this,
                         now.get(Calendar.YEAR),
                         now.get(Calendar.MONTH),
                         now.get(Calendar.DAY_OF_MONTH)
@@ -204,67 +241,23 @@ public  class Search_View extends AppCompatActivity implements TimePickerDialog.
 
                 charSequence = charSequence.toString().toLowerCase();
 
-                final ArrayList<String> filterList = new ArrayList<String>();
+                final ArrayList<TaskSuggestionModel> filterList = new ArrayList<>();
 
-                for(int j = 0; j < search_list2.size(); j++){
+                for(int j = 0; j < taskSuggestionList.size(); j++){
 
-                    final String text = search_list2.get(j).toLowerCase();
+                    final String text = taskSuggestionList.get(j).getSuggestion().toLowerCase();
                     if(text.contains(charSequence)){
-                        //filterList.add(search_list.get(j));
+                        filterList.add(taskSuggestionList.get(j));
                     }
                 }
-                recyclerView.setLayoutManager(new LinearLayoutManager(Search_View.this));
-                mAdapter = new SearchAdapter(filterList,Search_View.this);
-                recyclerView.setAdapter(mAdapter);
+                recyclerView.setLayoutManager(new LinearLayoutManager(AddNewTask.this));
+                taskSearchAdapter = new TaskSearchAdapter(filterList,AddNewTask.this);
+                recyclerView.setAdapter(taskSearchAdapter);
             }
         });
     }
 
-    private void suggestionList() {
 
-        ValueEventListener postListner = new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-
-                for (DataSnapshot snapshot : dataSnapshot.child("catSugList").getChildren()){
-
-                    counter++;
-                    Log.d("chair8",snapshot.getValue().toString());
-                    search_list.add(snapshot.getValue().toString());//firebase data
-
-                    long l = dataSnapshot.child("catSugList").getChildrenCount();
-                    Log.d("chair81",""+l);
-
-                    if(counter == dataSnapshot.child("catSugList").getChildrenCount())
-                    {
-                        for(int i =0 ; i < dataSnapshot.child("catSugList").getChildrenCount() ; i++) {
-
-                            CatSuggested catsug = new CatSuggested(search_list.get(i));
-                            catsug.save();
-                            Log.d("fabulo",""+search_list.get(i));
-                        }
-
-                        ArrayList<CatSuggested> sugcat = (ArrayList<CatSuggested>) CatSuggested.listAll(CatSuggested.class);
-                        Log.d("dhinchak",""+sugcat.size());
-
-                        for(int i = 0 ; i < sugcat.size(); i++){
-
-                            search_list2.add(sugcat.get(i).getCat_name().toString());
-                            Log.d("dhinchak2",""+search_list2.get(i));
-
-                        }
-                        mAdapter = new SearchAdapter(search_list2, Search_View.this);
-                        recyclerView.setAdapter(mAdapter);
-                    }
-                }
-                Log.d("chair5",""+dataSnapshot.child("catSugList").getChildrenCount());
-            }
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-            }
-        };
-        searchlist.addValueEventListener(postListner);
-    }
 
 
     @Override
@@ -319,7 +312,7 @@ public  class Search_View extends AppCompatActivity implements TimePickerDialog.
 
             Calendar now =  Calendar.getInstance();
             TimePickerDialog tpd = TimePickerDialog.newInstance(
-                    Search_View.this,
+                    AddNewTask.this,
                     now.get(Calendar.HOUR_OF_DAY),
                     now.get(Calendar.MINUTE),
                     false

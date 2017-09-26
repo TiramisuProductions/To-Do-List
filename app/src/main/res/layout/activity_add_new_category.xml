@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:padding="16dp"
-    tools:context="com.tiramisu.android.todolist.Add_new_category"
+    tools:context="com.tiramisu.android.todolist.AddNewCategory"
     android:background="@color/white">
 
     <EditText
@@ -19,15 +19,7 @@
         android:hint="Search here"
         android:layout_marginTop="20dp" />
 
-    <View
-        android:id="@+id/border"
-        android:layout_width="fill_parent"
-        android:layout_height="1dp"
-        android:layout_marginLeft="15dp"
-        android:layout_marginRight="15dp"
-        android:layout_below="@+id/search_category"
-        android:layout_marginTop="14dp"
-        android:background="#d3d3d3"/>
+
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/recyclerview_categorySearch"
@@ -35,18 +27,17 @@
         android:layout_height="wrap_content"
         android:padding="8dp"
         android:layout_marginTop="10dp"
-        android:layout_below="@+id/border"/>
+        android:layout_below="@+id/search_category"/>
 
-    <Button
+    <ImageView
         android:id="@+id/donebtn_cat"
         android:layout_toLeftOf="@+id/search_category"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true"
-        android:background="#cfd8dc"
         android:textColor="@color/black"
         android:layout_alignTop="@+id/search_category"
-        android:text="Done" />
+        android:src="@drawable/ic_check_black_24dp" />
 
 </RelativeLayout>

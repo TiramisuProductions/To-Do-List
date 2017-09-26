@@ -2,6 +2,8 @@ package com.tiramisu.android.todolist;
 
 import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
+import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.DividerItemDecoration;
@@ -11,11 +13,19 @@ import android.util.Log;
 import android.view.View;
 
 import android.view.inputmethod.InputMethodManager;
+import android.widget.EditText;
+import android.widget.TextView;
 
 
-import com.tiramisu.android.todolist.Adapter.TaskAdapter;
-import com.tiramisu.android.todolist.Adapter.TaskAdapter2;
-import com.tiramisu.android.todolist.Model.Task;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+import com.tiramisu.android.todolist.Adapter.TaskDoneAdapter;
+import com.tiramisu.android.todolist.Adapter.TaskNotDoneAdapter;
+import com.tiramisu.android.todolist.Model.StaticVar;
+import com.tiramisu.android.todolist.Model.TaskModel;
 import com.tiramisu.android.todolist.Model.WorldEvent;
 
 import org.greenrobot.eventbus.EventBus;
@@ -23,31 +33,42 @@ import org.greenrobot.eventbus.Subscribe;
 
 import java.util.ArrayList;
 
-import static com.tiramisu.android.todolist.Model.StaticVar.list;
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
+
 
 public class Tasks extends AppCompatActivity {
     private android.support.design.widget.FloatingActionButton addTask;
     private RecyclerView recyclerView,recyclerView2;
-    private ArrayList<Task> selectedlist = new ArrayList<>();
-    private ArrayList<Task> unselectedlist = new ArrayList<>();
+    private ArrayList<TaskModel> selectedlist = new ArrayList<>();
+    private ArrayList<TaskModel> unselectedlist = new ArrayList<>();
+    DatabaseReference todoref,categoryref;
+    @BindView(R.id.category_name) TextView categoryName;
+    @BindView(R.id.addtask)
+    EditText addTask2;
+    private int taskCounter = 0;
+    private String categoryId;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.tasklayout);
+        setContentView(R.layout.activity_tasks);
+        ButterKnife.bind(this);
+        categoryName.setText(getIntent().getStringExtra("category_name"));
+        categoryId=getIntent().getStringExtra("category_id");
+        StaticVar.CATEGORY_ID =categoryId;
 
-
-       // dateAndTime = (ImageButton) findViewById(R.id.datetime);
-      EventBus.getDefault().register(this);
+  todoref = FirebaseDatabase.getInstance().getReference("Todo");
+        categoryref = todoref.child(""+ StaticVar.UID+"/Categories");
         addTask=(android.support.design.widget.FloatingActionButton) findViewById(R.id.addButton);
         recyclerView2=(RecyclerView)findViewById(R.id.recyclerView_task2);
         recyclerView = (RecyclerView) findViewById(R.id.recyclerView_task);
         recyclerView.setNestedScrollingEnabled(true);
         recyclerView2.setNestedScrollingEnabled(true);
-        //getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
+
         InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-        // imm.hideSoftInputFromWindow(taskAdd.getWindowToken(), 0);
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext());
         recyclerView.setLayoutManager(mLayoutManager);
         recyclerView.addItemDecoration(new DividerItemDecoration(this, LinearLayoutManager.VERTICAL));
@@ -57,28 +78,60 @@ public class Tasks extends AppCompatActivity {
 
 
 
-        list = Task.listAll(Task.class);
-        Log.d("size", String.valueOf(list.size()));
-        updaterecyler();
-        ///Task.deleteAll(Task.class);
 
 
-        /*dateAndTime.setOnClickListener(new View.OnClickListener() {
+
+
+        categoryref.child(categoryId).child("Tasks").addValueEventListener(new ValueEventListener() {
             @Override
-            public void onClick(View v) {
-                CharSequence dateandtime[] = new CharSequence[]{"Date", "Time"};
-                AlertDialog.Builder datetime = new AlertDialog.Builder(Tasks.this);
-                datetime.setTitle("Set Date and Time ");
-                datetime.setItems(dateandtime, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
+            public void onDataChange(DataSnapshot dataSnapshot) {
+
+                selectedlist.clear();
+                unselectedlist.clear();
+                for(DataSnapshot snapshot : dataSnapshot.getChildren())
+                {
+
+                    TaskModel taskModel = new TaskModel( snapshot.getKey(),snapshot.child("taskName").getValue().toString(),snapshot.child("dueDate").getValue().toString(),snapshot.child("reminder").getValue().toString(),snapshot.child("done").getValue().toString());
+                    if(taskModel.getDone().equals("true"))
+                    {
+                        Log.d("Done","Done");
+                        selectedlist.add(taskModel);
+                    }
+                    else {
+                        Log.d("NotDone","NotDone");
+                        unselectedlist.add(taskModel);
+                    }
+                    snapshot.getKey();
+
+
+            taskCounter++;
+
+                    if(taskCounter==dataSnapshot.getChildrenCount())
+                    {
+                        taskCounter=0;
+                        TaskDoneAdapter mAdapter = new TaskDoneAdapter(Tasks.this, selectedlist);
+                        TaskNotDoneAdapter nAdapter= new TaskNotDoneAdapter(Tasks.this,unselectedlist);
+                        recyclerView.setAdapter(mAdapter);
+                        recyclerView2.setAdapter(nAdapter);
+
 
                     }
-                });
-                datetime.show();
+
+
+
+                    }
+
+
+
+                }
+
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
 
             }
-        });*/
+        });
+
 
 
 
@@ -91,8 +144,25 @@ public class Tasks extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-                Intent intent=new Intent(Tasks.this,Search_View.class);
+                Intent intent=new Intent(Tasks.this,AddNewTask.class);
                 startActivity(intent);
+            }
+        });
+
+
+
+        addTask2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent=new Intent(Tasks.this,AddNewTask.class);
+                intent.putExtra("category_id",getIntent().getStringExtra("category_id"));
+                ActivityOptionsCompat activityOptionsCompat = ActivityOptionsCompat.makeSceneTransitionAnimation(Tasks.this,addTask2,"addtask");
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+                    startActivity(intent,activityOptionsCompat.toBundle());
+                }
+                else {
+                    startActivity(intent);
+                }
             }
         });
 
@@ -101,41 +171,7 @@ public class Tasks extends AppCompatActivity {
 
 
     }
-@Subscribe
-    public void onEvent(WorldEvent event){
-        // your implementation
-    runOnUiThread(new Runnable() {
-        @Override
-        public void run() {
-            updaterecyler();
-        }
-    });
 
-    }
-
-    private void updaterecyler()
-    {
-       /* list = Task.listAll(Task.class);
-        selectedlist.clear();
-        unselectedlist.clear();
-        for(int  i=0;i<list.size();i++)
-        {
-            Task task = list.get(i);
-            if(task.isselected)
-            {
-                selectedlist.add(task);
-            }
-            else
-            {
-                unselectedlist.add(task);
-            }
-        }
-        TaskAdapter mAdapter = new TaskAdapter(this, unselectedlist);
-        TaskAdapter2 nAdapter= new TaskAdapter2(this,selectedlist);
-        recyclerView.setAdapter(mAdapter);
-        recyclerView2.setAdapter(nAdapter);
-*/
-    }
 
 
 
