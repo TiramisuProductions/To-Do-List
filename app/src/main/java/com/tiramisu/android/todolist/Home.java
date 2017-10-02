@@ -1,19 +1,13 @@
 package com.tiramisu.android.todolist;
 
-import android.content.BroadcastReceiver;
 import android.content.Context;
-import android.content.Intent;
-import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
-import android.util.Log;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -22,7 +16,7 @@ import android.widget.ImageView;
 
 
 
-import com.tiramisu.android.todolist.Fragments.CalenderFragment;
+import com.tiramisu.android.todolist.Fragments.CalendarFragment;
 import com.tiramisu.android.todolist.Fragments.CategoriesFragment;
 import com.tiramisu.android.todolist.Model.StaticVar;
 
@@ -134,7 +128,7 @@ drawer.openDrawer(Gravity.LEFT);
             // Handle the camera action
         } else if (id == R.id.calender) {
 
-            CalenderFragment calenderFragment =new CalenderFragment();
+            CalendarFragment calenderFragment =new CalendarFragment();
             FragmentManager manager = getSupportFragmentManager();
             manager.beginTransaction().replace(R.id.layout_content,calenderFragment,calenderFragment.getTag()).commit();
 

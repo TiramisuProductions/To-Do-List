@@ -73,7 +73,7 @@ public class CategoriesFragment extends Fragment {
         floatingActionButton1 = (FloatingActionButton)rootView.findViewById(R.id.material_design_floating_action_menu_item1);
         floatingActionButton2 = (FloatingActionButton)rootView.findViewById(R.id.material_design_floating_action_menu_item2);
 
-
+        //Add category button
         floatingActionButton1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -82,6 +82,7 @@ public class CategoriesFragment extends Fragment {
             }
         });
 
+        //Add task button
         floatingActionButton2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

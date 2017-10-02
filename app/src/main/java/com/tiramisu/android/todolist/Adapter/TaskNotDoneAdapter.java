@@ -23,14 +23,14 @@ import com.tiramisu.android.todolist.Tasks;
 import java.util.List;
 
 
-
+//Adapter for recycler view for task that are not checked
 public class TaskNotDoneAdapter extends RecyclerView.Adapter<TaskNotDoneAdapter.MyView> {
 
     private Context context;
     private  List<TaskModel> list;
     private Tasks tasks;
     private int counter;
-    DatabaseReference todoref,categoryref;
+    public DatabaseReference todoref,categoryref;
 
     public TaskNotDoneAdapter(Context context , List<TaskModel> list) {
         this.context=context;
@@ -48,26 +48,13 @@ public class TaskNotDoneAdapter extends RecyclerView.Adapter<TaskNotDoneAdapter.
     @Override
     public void onBindViewHolder(final TaskNotDoneAdapter.MyView holder, final int position) {
         final TaskModel list1 =list.get(position);
-//        Log.d("name",list1.getText());
-
-
-
-
-
-
-
-//
-
         holder.checkBox.setChecked(false);
-
-
         holder.text.setText(list1.getTaskName());
+
+        //Delete button deletes the task
         holder.delete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
-                // notifyItemChanged(position);
-                // notifyItemRangeChanged(position,list.size());
                 todoref = FirebaseDatabase.getInstance().getReference("Todo");
                 categoryref = todoref.child(""+StaticVar.UID+"/Categories");
                 categoryref.child(StaticVar.CATEGORY_ID).child("Tasks").child(list1.getId()).removeValue();
@@ -76,12 +63,7 @@ public class TaskNotDoneAdapter extends RecyclerView.Adapter<TaskNotDoneAdapter.
             }
         });
 
-
-
-
-
-
-
+        //Checks if task is checked or not
         holder.checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
@@ -102,7 +84,6 @@ public class TaskNotDoneAdapter extends RecyclerView.Adapter<TaskNotDoneAdapter.
     @Override
     public int getItemCount() {
         Log.d("oneplus",""+list.size());
-
         return list.size();
     }
 

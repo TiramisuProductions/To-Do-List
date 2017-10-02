@@ -23,10 +23,8 @@ import com.tiramisu.android.todolist.Tasks;
 
 import java.util.List;
 
-/**
- * Created by Sarvesh Palav on 26-09-2017.
- */
 
+//Adapter for recycler view in All category for task which are checked
 public class AllTasksNotDoneAdapter extends RecyclerView.Adapter<AllTasksNotDoneAdapter.MyView> {
     private Context context;
     private List<AllTasksModel> list;

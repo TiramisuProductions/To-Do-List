@@ -2,12 +2,17 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.tiramisu.android.todolist.Fragments.CalenderFragment">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context="com.tiramisu.android.todolist.Fragments.CalendarFragment"
+    android:background="@color/white">
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
+    <RelativeLayout
+        android:id="@+id/calender1"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="@string/hello_blank_fragment" />
+        android:layout_height="match_parent">
+
+
+    </RelativeLayout>
+
 
 </FrameLayout>

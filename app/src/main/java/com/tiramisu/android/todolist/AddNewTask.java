@@ -41,16 +41,16 @@ public  class AddNewTask extends AppCompatActivity implements TimePickerDialog.O
     private EditText editSearch;
     private TaskSearchAdapter taskSearchAdapter;
     private ImageView done;
-    DatabaseReference taskSugeestionRef;
+    DatabaseReference taskSugestionRef;
     private ArrayList<String> search_list = new ArrayList<String>();
     private ArrayList<String> search_list2 = new ArrayList<String>();
     private ArrayList<TaskSuggestionModel> taskSuggestionList = new ArrayList<>();
     int counter =0;
     private Button today,tomorrow,upcoming,custom;
     private RelativeLayout search_linear;
-    String duetime="temp",date="temp"; //dueTime and dueDate is asigned
+    String dueTime="temp",date="temp"; //dueTime and dueDate is asigned
 
-    boolean button1=false,button2=false,button3=false,button4=false,time=false;
+    boolean button1=false,button2=false,button3=false,button4=false,time=false;//button boolean
     SimpleDateFormat myFormat = new SimpleDateFormat("dd/MM/yyyy");
     private DatabaseReference CategoryRef;
 
@@ -66,7 +66,7 @@ public  class AddNewTask extends AppCompatActivity implements TimePickerDialog.O
 
         CategoryRef = FirebaseDatabase.getInstance().getReference("Todo/"+ StaticVar.UID + "/Categories");
 
-        taskSugeestionRef= FirebaseDatabase.getInstance().getReference("category_suggetion_list");
+        taskSugestionRef= FirebaseDatabase.getInstance().getReference("category_suggetion_list");
 
         search_linear=(RelativeLayout) findViewById(R.id.search_ll);
 
@@ -91,7 +91,7 @@ public  class AddNewTask extends AppCompatActivity implements TimePickerDialog.O
         });
 
 
-        taskSugeestionRef.addValueEventListener(new ValueEventListener() {
+        taskSugestionRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 for (DataSnapshot snapshot : dataSnapshot.child("catSugList").getChildren()){
@@ -122,6 +122,8 @@ public  class AddNewTask extends AppCompatActivity implements TimePickerDialog.O
             }
         });
 
+
+        //Pushes taskname,date and time into the database
         done.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -134,27 +136,23 @@ public  class AddNewTask extends AppCompatActivity implements TimePickerDialog.O
                 {
                     String key_id1 = CategoryRef.push().getKey();
                     CategoryRef.child("All").child("Category_Name").setValue("All");
-                    TaskModel taskModel = new TaskModel(taskName,date,duetime,"temp","false");
+                    TaskModel taskModel = new TaskModel(taskName,date,dueTime,"temp","false");
                     CategoryRef.child("All").child("Tasks").child(key_id1).setValue(taskModel);
                     Log.d("hello",""+date);
-                    Log.d("hello1",""+duetime);
+                    Log.d("hello1",""+dueTime);
                 }
                 else{
                     String key_id1 = CategoryRef.push().getKey();
-                    TaskModel taskModel = new TaskModel(taskName,date,duetime,"temp","false");
+                    TaskModel taskModel = new TaskModel(taskName,date,dueTime,"temp","false");
                     CategoryRef.child(getIntent().getStringExtra("category_id")).child("Tasks").child(key_id1).setValue(taskModel);
                     Log.d("hello",""+date);
-                    Log.d("hello1",""+duetime);
+                    Log.d("hello1",""+dueTime);
                 }
-
-
-
-
                 finish();
             }
         });
 
-
+        //Takes today's time
         today.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -173,6 +171,7 @@ public  class AddNewTask extends AppCompatActivity implements TimePickerDialog.O
             }
         });
 
+        //Takes tomorrow's time
         tomorrow.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -188,7 +187,7 @@ public  class AddNewTask extends AppCompatActivity implements TimePickerDialog.O
             }
         });
 
-
+        //Takes only date of upcoming tasks
         upcoming.setOnClickListener(new View.OnClickListener() {
 
 
@@ -212,7 +211,7 @@ public  class AddNewTask extends AppCompatActivity implements TimePickerDialog.O
 
         });
 
-
+        //Takes time and date of upcoming task
         custom.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -269,32 +268,32 @@ public  class AddNewTask extends AppCompatActivity implements TimePickerDialog.O
 
 
 
-
+    //Taken date and time is set here
     @Override
     public void onTimeSet(TimePickerDialog view, int hourOfDay, int minute, int second) {
 
         if(button1=true) {
             Calendar c=Calendar.getInstance();
-            duetime= String.valueOf(c.getTimeInMillis());
-            duetime = String.valueOf(hourOfDay + minute + second);
+            dueTime= String.valueOf(c.getTimeInMillis());
+            dueTime = String.valueOf(hourOfDay + minute + second);
 
         }
 
         if(button2=true)
         {
             Calendar c=Calendar.getInstance();
-          duetime= String.valueOf(c.getTimeInMillis());
+          dueTime= String.valueOf(c.getTimeInMillis());
             int day=c.get(Calendar.DAY_OF_MONTH);
             ++ day;
-            duetime = String.valueOf( + hourOfDay + minute + second+ day);
+            dueTime = String.valueOf( + hourOfDay + minute + second+ day);
 
 
         }
 
         if(time=true){
             Calendar c=Calendar.getInstance();
-            duetime= String.valueOf(c.getTimeInMillis());
-            duetime = String.valueOf( + hourOfDay + minute + second);,
+            dueTime= String.valueOf(c.getTimeInMillis());
+            dueTime = String.valueOf( + hourOfDay + minute + second);
         }
     }
 

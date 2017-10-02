@@ -21,6 +21,7 @@ import com.tiramisu.android.todolist.Tasks;
 
 import java.util.List;
 
+//Adapter for recycler view for task which are checked
 public class TaskDoneAdapter extends RecyclerView.Adapter<TaskDoneAdapter.MyView> {
     private Context context;
     private List<TaskModel> list;
@@ -41,14 +42,12 @@ public class TaskDoneAdapter extends RecyclerView.Adapter<TaskDoneAdapter.MyView
     @Override
     public void onBindViewHolder(final TaskDoneAdapter.MyView holder, final int position) {
         final TaskModel list1 =list.get(position);
-
-
-
         holder.checkBox.setChecked(true);
         holder.text.setText(list1.getTaskName());
         holder.text.setPaintFlags(holder.text.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
 
-holder.delete.setOnClickListener(new View.OnClickListener() {
+        //deletes the done task
+        holder.delete.setOnClickListener(new View.OnClickListener() {
     @Override
     public void onClick(View v) {
         todoref = FirebaseDatabase.getInstance().getReference("Todo");
@@ -58,8 +57,7 @@ holder.delete.setOnClickListener(new View.OnClickListener() {
         notifyDataSetChanged();
     }
 });
-
-
+        //Checks if task is checked or not
         holder.checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
