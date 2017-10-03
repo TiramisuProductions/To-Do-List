@@ -90,16 +90,6 @@ public class CategoriesAdapter extends RecyclerView.Adapter<CategoriesAdapter.My
                     }
                 }
 
-
-
-
-
-
-
-
-
-
-
             }
         });
     }

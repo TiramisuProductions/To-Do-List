@@ -13,17 +13,12 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.tiramisu.android.todolist.Model.KEYS;
 
 import java.util.ArrayList;
 
-/**
- * Created by sarveshpalav on 18/08/17.
- */
+
 
 public class FirebaseBackgroundService extends Service {
-
-
 
     DatabaseReference lastupdatedref, todoref,categoryref;
     SharedPreferences pref;
@@ -107,7 +102,6 @@ public class FirebaseBackgroundService extends Service {
 
 
 
-            Log.d("Preflol",pref.getString(KEYS.LASTUPDATED,"hj"));
 
 
 
@@ -133,18 +127,6 @@ public class FirebaseBackgroundService extends Service {
 
                 }
             });
-
-
-
-
-
-
-
-
-
-
-
-
             stopSelf();
         }
 

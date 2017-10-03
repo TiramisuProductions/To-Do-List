@@ -37,7 +37,6 @@ public class CalendarFragment extends Fragment {
     private DatabaseReference calref;
     int counter = 0;
     private ArrayList<String> dueDateList1 = new ArrayList<String>();
-    public RecyclerView mRecyclerView;
     public CalendarAdapter madapter;
 
 
@@ -87,7 +86,6 @@ public class CalendarFragment extends Fragment {
                                     Log.d("DueSize", "" + dueDateList1.size());
 
                                     madapter = new CalendarAdapter(dueDateList1,getContext());
-                                    mRecyclerView.setAdapter(madapter);
                                 }
                             }
 

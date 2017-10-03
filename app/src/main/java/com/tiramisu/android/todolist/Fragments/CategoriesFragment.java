@@ -40,17 +40,14 @@ import java.util.List;
 public class CategoriesFragment extends Fragment {
 
     private Context mContext;
-    RelativeLayout mRelativeLayout;
+    private RelativeLayout mRelativeLayout;
     private RecyclerView mRecyclerView;
-    FloatingActionMenu materialDesignFAM;
-    FloatingActionButton floatingActionButton1, floatingActionButton2;
+    private DatabaseReference toDoRef,categoryRef;
+    private FloatingActionMenu materialDesignFAM;
+    public RecyclerView.LayoutManager mLayoutManager;
+    private FloatingActionButton floatingActionButton1, floatingActionButton2;
+    public List<CategoryModel> categoryModelList = new ArrayList<CategoryModel>();
     int CategoryCounter = 0;
-    DatabaseReference todoref,categoryref;
-    List<CategoryModel> categoryModelList = new ArrayList<CategoryModel>();
-
-
-
-
 
     public CategoriesFragment() {
         // Required empty public constructor
@@ -61,14 +58,11 @@ public class CategoriesFragment extends Fragment {
 
         View rootView = inflater.inflate(R.layout.fragment_categories, container, false);
         mContext = getContext();
-
-        RecyclerView.LayoutManager mLayoutManager = new GridLayoutManager(getActivity().getApplicationContext(),2);
-
+        mLayoutManager = new GridLayoutManager(getActivity().getApplicationContext(),2);
 
         mRelativeLayout = (RelativeLayout) rootView.findViewById(R.id.rl);
         mRecyclerView = (RecyclerView) rootView.findViewById(R.id.recycler_Categories);
         mRecyclerView.setLayoutManager(mLayoutManager);
-
         materialDesignFAM = (FloatingActionMenu)rootView.findViewById(R.id.material_design_android_floating_action_menu);
         floatingActionButton1 = (FloatingActionButton)rootView.findViewById(R.id.material_design_floating_action_menu_item1);
         floatingActionButton2 = (FloatingActionButton)rootView.findViewById(R.id.material_design_floating_action_menu_item2);
@@ -92,17 +86,13 @@ public class CategoriesFragment extends Fragment {
             }
         });
 
-        todoref = FirebaseDatabase.getInstance().getReference("Todo");
-        todoref.keepSynced(true);
-        categoryref = todoref.child(""+ StaticVar.UID+"/Categories");
-        categoryref.keepSynced(true);
+        toDoRef = FirebaseDatabase.getInstance().getReference("Todo");
+        toDoRef.keepSynced(true);
+        categoryRef = toDoRef.child(""+ StaticVar.UID+"/Categories");
+        categoryRef.keepSynced(true);
 
 
-
-
-
-
-        categoryref.addValueEventListener(new ValueEventListener() {
+        categoryRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 categoryModelList.clear();
@@ -133,14 +123,6 @@ public class CategoriesFragment extends Fragment {
 
             }
         });
-
-
-
-
-
-
-
-
 
         return rootView;
     }

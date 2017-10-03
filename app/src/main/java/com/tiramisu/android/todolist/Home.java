@@ -18,6 +18,7 @@ import android.widget.ImageView;
 
 import com.tiramisu.android.todolist.Fragments.CalendarFragment;
 import com.tiramisu.android.todolist.Fragments.CategoriesFragment;
+import com.tiramisu.android.todolist.Fragments.GoalsFragment;
 import com.tiramisu.android.todolist.Model.StaticVar;
 
 
@@ -80,15 +81,6 @@ drawer.openDrawer(Gravity.LEFT);
 
 
     }
-
-
-
-
-
-
-
-
-
     public void init()
     {
         CategoriesFragment categoriesFragment = new CategoriesFragment();
@@ -134,7 +126,11 @@ drawer.openDrawer(Gravity.LEFT);
 
         }
 
-         else if (id == R.id.nav_share) {
+         else if (id == R.id.goals) {
+
+            GoalsFragment goalsFragment=new GoalsFragment();
+            FragmentManager manager=getSupportFragmentManager();
+            manager.beginTransaction().replace(R.id.layout_content,goalsFragment,goalsFragment.getTag()).commit();
 
         } else if (id == R.id.nav_send) {
 

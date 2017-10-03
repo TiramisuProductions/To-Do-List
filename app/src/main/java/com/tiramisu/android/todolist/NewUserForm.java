@@ -24,7 +24,6 @@ import com.google.firebase.database.ValueEventListener;
 import com.tiramisu.android.todolist.Model.Details;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.tiramisu.android.todolist.Model.KEYS;
 import com.tiramisu.android.todolist.Model.TaskModel;
 import com.tiramisu.android.todolist.Model.UserUID;
 
@@ -59,6 +58,7 @@ public class NewUserForm extends AppCompatActivity {
 
     String Category_Name1 = "Personal";
     String Category_Name2 = "Work";
+    String Goal_Name1 ="Exercise",Goal_Name2="Build a Skill",Goal_Name3 = "Self Time ";
     String date1 = "13-10-1996",name1 = "code my project",status1 = "not done",time1 = "12:00";
     String date2 = "13-10-1996",name2 = "code my project",status2 = "not done",time2 = "12:00";
     String datez = "13-10-2000",namez = "code his project",statusz = "done",timez = "13:00";
@@ -327,10 +327,6 @@ public class NewUserForm extends AppCompatActivity {
         String key_id6 = refFirst.push().getKey();
         String key_id7 = refFirst.push().getKey();
 
-        String key_task_grp1 = refFirst.push().getKey();
-        String key_task_grp2 = refFirst.push().getKey();
-
-
         Details details = new Details(key_id1,name.getText().toString(),username.getText().toString(),genderselected);
 
         refFirst.child("Todo").child(Uid).child("Details").child(key_id1).setValue(details);
@@ -339,13 +335,14 @@ public class NewUserForm extends AppCompatActivity {
 
         //category 1,task1
         refFirst.child("Todo").child(Uid).child("Categories").child(key_id2).child("Category_Name").setValue(Category_Name1);
-
-
         //task2
-
-
         //category 2,task1
         refFirst.child("Todo").child(Uid).child("Categories").child(key_id4).child("Category_Name").setValue(Category_Name2);
+
+        //Goals
+        refFirst.child("Todo").child(Uid).child("Goals").child(key_id3).child("Goal_Name").setValue(Goal_Name1);
+        refFirst.child("Todo").child(Uid).child("Goals").child(key_id5).child("Goal_Name").setValue(Goal_Name2);
+        refFirst.child("Todo").child(Uid).child("Goals").child(key_id6).child("Goal_Name").setValue(Goal_Name3);
 
 
 

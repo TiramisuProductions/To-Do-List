@@ -5,7 +5,6 @@ public class CategoryModel {
 
     String name;
     String id;
-    String items;
 
     public String getId() {
         return id;
