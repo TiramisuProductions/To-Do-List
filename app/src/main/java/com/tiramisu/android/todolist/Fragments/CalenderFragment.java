@@ -1,6 +1,8 @@
 package com.tiramisu.android.todolist.Fragments;
 
 
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 
 import android.support.v4.app.Fragment;
@@ -26,9 +28,11 @@ import com.tiramisu.android.todolist.Model.StaticVar;
 import com.tiramisu.android.todolist.R;
 
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
-
+import java.util.Date;
 
 
 public class CalenderFragment extends Fragment {
@@ -39,6 +43,10 @@ public class CalenderFragment extends Fragment {
     private ArrayList<String> dueDateList1 = new ArrayList<String>();
     private RecyclerView mRecyclerView;
     public CalendarAdapter madapter;
+    String temp = "", date = "";
+    Date date2;
+
+    SimpleDateFormat myFormat = new SimpleDateFormat("dd/MM/yyyy");
 
 
     public CalenderFragment() {
@@ -54,6 +62,17 @@ public class CalenderFragment extends Fragment {
 
         dueDateList1.clear();
         calref.keepSynced(true);
+
+        final CaldroidFragment caldroidFragment = new CaldroidFragment();
+        Bundle args = new Bundle();
+        Calendar cal = Calendar.getInstance();
+        args.putInt(CaldroidFragment.MONTH, cal.get(Calendar.MONTH) + 1);
+        args.putInt(CaldroidFragment.YEAR, cal.get(Calendar.YEAR));
+        caldroidFragment.setArguments(args);
+
+        FragmentTransaction t = getFragmentManager().beginTransaction();
+        t.replace(R.id.calender1, caldroidFragment);
+        t.commit();
 
         calref.addValueEventListener(new ValueEventListener() {
             @Override
@@ -86,8 +105,25 @@ public class CalenderFragment extends Fragment {
                                 if (counter == counter_categories) {
                                     Log.d("DueSize", "" + dueDateList1.size());
 
-                                    madapter = new CalendarAdapter(dueDateList1,getContext());
-                                    mRecyclerView.setAdapter(madapter);
+                                    //madapter = new CalendarAdapter(dueDateList1,getContext());
+                                    //mRecyclerView.setAdapter(madapter);
+
+                                    for(int i =0; i < dueDateList1.size(); i++){
+
+                                        date = getDate(Long.parseLong(dueDateList1.get(i)), "dd/MM/yyyy");
+                                        try {
+                                            date2 = myFormat.parse(date);
+                                        } catch (ParseException e) {
+                                            e.printStackTrace();
+                                        }
+
+                                        caldroidFragment.setBackgroundDrawableForDate(new ColorDrawable(Color.parseColor("#ff4000")),date2);
+
+                                        Log.d("date34", ""+date);
+                                        Log.d("temp4", ""+dueDateList1.get(i));
+                                    }
+
+                                    Log.d("temp2",""+temp);
                                 }
                             }
 
@@ -101,7 +137,6 @@ public class CalenderFragment extends Fragment {
             }
 
 
-
             @Override
             public void onCancelled(DatabaseError databaseError) {
 
@@ -109,18 +144,19 @@ public class CalenderFragment extends Fragment {
         });
 
 
-        CaldroidFragment caldroidFragment = new CaldroidFragment();
-        Bundle args = new Bundle();
-        Calendar cal = Calendar.getInstance();
-        args.putInt(CaldroidFragment.MONTH, cal.get(Calendar.MONTH) + 1);
-        args.putInt(CaldroidFragment.YEAR, cal.get(Calendar.YEAR));
-        caldroidFragment.setArguments(args);
-
-        FragmentTransaction t = getFragmentManager().beginTransaction();
-        t.replace(R.id.calender1, caldroidFragment);
-        t.commit();
 
 
         return rootView;
+    }
+
+    public static String getDate(long milliSeconds, String dateFormat)
+    {
+        // Create a DateFormatter object for displaying date in specified format.
+        SimpleDateFormat formatter = new SimpleDateFormat(dateFormat);
+
+        // Create a calendar object that will convert the date and time value in milliseconds to date.
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTimeInMillis(milliSeconds);
+        return formatter.format(calendar.getTime());
     }
 }
