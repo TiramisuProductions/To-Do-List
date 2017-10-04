@@ -93,7 +93,8 @@ public class LoginActivity extends AppCompatActivity {
 
         if (mAuth.getCurrentUser() !=null){
 
-
+           // Intent n = new Intent(this,Home.class);
+            //startActivity(n);
 
         }
 

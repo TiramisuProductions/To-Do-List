@@ -21,6 +21,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.tiramisu.android.todolist.Adapter.CalendarAdapter;
 import com.tiramisu.android.todolist.Adapter.CategoriesAdapter;
 import com.tiramisu.android.todolist.AddNewCategory;
 import com.tiramisu.android.todolist.AddNewTask;
@@ -45,6 +46,7 @@ public class CategoriesFragment extends Fragment {
     private DatabaseReference toDoRef,categoryRef;
     private FloatingActionMenu materialDesignFAM;
     public RecyclerView.LayoutManager mLayoutManager;
+    public CategoriesAdapter mAdapter;
     private FloatingActionButton floatingActionButton1, floatingActionButton2;
     public List<CategoryModel> categoryModelList = new ArrayList<CategoryModel>();
     int CategoryCounter = 0;
@@ -59,6 +61,7 @@ public class CategoriesFragment extends Fragment {
         View rootView = inflater.inflate(R.layout.fragment_categories, container, false);
         mContext = getContext();
         mLayoutManager = new GridLayoutManager(getActivity().getApplicationContext(),2);
+
 
         mRelativeLayout = (RelativeLayout) rootView.findViewById(R.id.rl);
         mRecyclerView = (RecyclerView) rootView.findViewById(R.id.recycler_Categories);
@@ -90,6 +93,7 @@ public class CategoriesFragment extends Fragment {
         toDoRef.keepSynced(true);
         categoryRef = toDoRef.child(""+ StaticVar.UID+"/Categories");
         categoryRef.keepSynced(true);
+        mRecyclerView.setAdapter(mAdapter);
 
 
         categoryRef.addValueEventListener(new ValueEventListener() {
@@ -110,8 +114,10 @@ public class CategoriesFragment extends Fragment {
                     if(CategoryCounter==dataSnapshot.getChildrenCount())
                     {
                         CategoryCounter=0;
-                        CategoriesAdapter categoriesAdapter = new CategoriesAdapter(getActivity(),categoryModelList);
-                        mRecyclerView.setAdapter(categoriesAdapter);
+
+                        mAdapter =new CategoriesAdapter(getActivity(),categoryModelList);
+                        //CategoriesAdapter categorieszAdapter = new CategoriesAdapter(getActivity(),categoryModelList);
+                        mRecyclerView.setAdapter(mAdapter);
 
                     }
 

@@ -2,6 +2,7 @@ package com.tiramisu.android.todolist.Adapter;
 
 import android.app.Activity;
 import android.support.v4.app.FragmentActivity;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -20,7 +21,7 @@ import java.util.List;
 public class GoalsAdapter extends RecyclerView.Adapter<GoalsAdapter.MyView> {
     public List<GoalsModel> goalsList=new ArrayList<>();
     public Activity activity;
-    private DatabaseReference toDoRef,goalsRef;
+    public DatabaseReference toDoRef,goalsRef;
 
 
 
@@ -43,7 +44,9 @@ public class GoalsAdapter extends RecyclerView.Adapter<GoalsAdapter.MyView> {
     @Override
     public void onBindViewHolder(MyView holder, int position) {
 
-        holder.mText.setText(goalsList.get(position).getName());
+        GoalsModel goals=goalsList.get(position);
+
+        holder.mText.setText(goals.getName());
 
 
     }
@@ -56,10 +59,13 @@ public class GoalsAdapter extends RecyclerView.Adapter<GoalsAdapter.MyView> {
 
     public class MyView extends RecyclerView.ViewHolder {
         TextView mText;
+        CardView cardView;
+
 
         public MyView(View itemView) {
             super(itemView);
             mText=(TextView)itemView.findViewById(R.id.goalsText);
+            cardView=(CardView)itemView.findViewById(R.id.cardView);
         }
     }
 }

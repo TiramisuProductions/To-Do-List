@@ -8,6 +8,7 @@ import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -56,7 +57,7 @@ public class Home extends AppCompatActivity
         }
 
         StaticVar.UID = sharedpreferences.getString(SHAREDPREFUID,null);
-
+        StaticVar.UID= "ZQqOaBEE0rO9mc1jioqFHBuxqUS2";
 
 
         final DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);

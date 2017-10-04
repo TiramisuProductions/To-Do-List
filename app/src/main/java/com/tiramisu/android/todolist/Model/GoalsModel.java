@@ -3,14 +3,17 @@ package com.tiramisu.android.todolist.Model;
 
 
 public class GoalsModel {
-    public String name;
     public String id;
+    public String name;
 
-
-    public GoalsModel(String name,String id) {
-        this.name = name;
-        this.id=id;
+    public GoalsModel() {
     }
+
+    public GoalsModel(String id, String name) {
+        this.id = id;
+        this.name = name;
+    }
+
     public String getName() {
         return name;
     }

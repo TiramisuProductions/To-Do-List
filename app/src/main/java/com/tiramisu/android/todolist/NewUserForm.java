@@ -85,6 +85,7 @@ public class NewUserForm extends AppCompatActivity {
         refFirst = FirebaseDatabase.getInstance().getReference();
 
         if (i.getStringExtra("name") != null)
+
         {
             username.setText(i.getStringExtra("name").toLowerCase().replaceAll("\\s",""));
         }
