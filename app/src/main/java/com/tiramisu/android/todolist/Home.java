@@ -57,7 +57,7 @@ public class Home extends AppCompatActivity
         }
 
         StaticVar.UID = sharedpreferences.getString(SHAREDPREFUID,null);
-        StaticVar.UID= "ZQqOaBEE0rO9mc1jioqFHBuxqUS2";
+        //StaticVar.UID= "ZQqOaBEE0rO9mc1jioqFHBuxqUS2";
 
 
         final DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);

@@ -106,10 +106,6 @@ public  class AddNewTask extends AppCompatActivity implements TimePickerDialog.O
 
                     if(counter == dataSnapshot.child("catSugList").getChildrenCount())
                     {
-
-
-
-
                         taskSearchAdapter = new TaskSearchAdapter(taskSuggestionList, AddNewTask.this);
                         recyclerView.setAdapter(taskSearchAdapter);
                     }
