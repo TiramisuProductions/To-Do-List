@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/newuserformlayout"
     android:paddingBottom="@dimen/activity_vertical_margin"
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
@@ -61,38 +62,37 @@
             />
     </android.support.design.widget.TextInputLayout>
 
-    <ProgressBar
-        android:layout_below="@id/namelayout"
-        android:id="@+id/progressbar"
-        android:visibility="invisible"
-        android:layout_toRightOf="@id/usernameLayout"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+   <ProgressBar
+       android:layout_width="wrap_content"
+       android:layout_below="@id/usernameLayout"
+       android:visibility="invisible"
+       android:id="@+id/usernameprogressbar"
+       android:layout_height="wrap_content" />
 
     <TextView
-        android:id="@+id/whenborn"
-        android:layout_below="@+id/usernameLayout"
-        android:paddingTop="20dp"
-        android:visibility="gone"
-        android:text="When Were You Born :"
+        android:id="@+id/usernameavailable"
+    android:layout_width="wrap_content"
+    android:layout_below="@id/usernameLayout" android:visibility="invisible"
+    android:layout_margin="10dp"
+    android:text="UserName Available :)"
+    android:layout_height="wrap_content" />
+
+    <TextView
+        android:visibility="invisible"
         android:layout_width="wrap_content"
+        android:id="@+id/usernamenotavailable"
+        android:layout_below="@id/usernameLayout"
+        android:layout_margin="10dp"
+        android:text="UserName Not  Available :("
         android:layout_height="wrap_content" />
 
-    <EditText android:id="@+id/dob"
-        android:padding="20dp"
-        android:layout_below="@id/whenborn"
-        android:layout_width="match_parent"
-        android:visibility="gone"
-        android:layout_height="wrap_content"
-        android:inputType="textEmailAddress"
-        android:textColorHint="@color/white"
-        android:textColor="@color/white"
-        />
+
+
 
     <TextView
         android:id="@+id/gendertext"
-        android:layout_below="@id/dob"
-        android:paddingTop="20dp"
+        android:layout_below="@id/usernameprogressbar"
+android:paddingTop="40dp"
         android:text="Gender:"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />

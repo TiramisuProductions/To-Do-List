@@ -9,7 +9,7 @@
     android:background="@color/white">
 
     <EditText
-        android:id="@+id/search_category"
+        android:id="@+id/searchcategory"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical"
@@ -22,22 +22,22 @@
 
 
     <android.support.v7.widget.RecyclerView
-        android:id="@+id/recyclerview_categorySearch"
+        android:id="@+id/categorysearch"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:padding="8dp"
         android:layout_marginTop="10dp"
-        android:layout_below="@+id/search_category"/>
+        android:layout_below="@+id/searchcategory"/>
 
     <ImageView
-        android:id="@+id/donebtn_cat"
-        android:layout_toLeftOf="@+id/search_category"
+        android:id="@+id/done"
+        android:layout_toLeftOf="@+id/searchcategory"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true"
         android:textColor="@color/black"
-        android:layout_alignTop="@+id/search_category"
+        android:layout_alignTop="@+id/searchcategory"
         android:src="@drawable/ic_check_black_24dp" />
 
 </RelativeLayout>

@@ -4,13 +4,13 @@
     android:layout_height="match_parent"
     xmlns:fab="http://schemas.android.com/apk/res-auto"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/rl"
+    android:id="@+id/categoryfragmentlayout"
     tools:context="com.tiramisu.android.todolist.Fragments.CategoriesFragment"
     android:background="@color/white">
 
 
     <android.support.v7.widget.RecyclerView
-        android:id="@+id/recycler_Categories"
+        android:id="@+id/categoryrecylerview"
         android:scrollbars="vertical"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
@@ -57,7 +57,7 @@
         fab:menu_showShadow="true">
 
         <com.github.clans.fab.FloatingActionButton
-            android:id="@+id/material_design_floating_action_menu_item1"
+            android:id="@+id/addcategoryfloatingaction"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             fab:fab_colorNormal="@color/blue"
@@ -67,7 +67,7 @@
             fab:fab_size="mini" />
 
         <com.github.clans.fab.FloatingActionButton
-            android:id="@+id/material_design_floating_action_menu_item2"
+            android:id="@+id/addtaskfloatingaction"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             fab:fab_colorNormal="@color/blue"

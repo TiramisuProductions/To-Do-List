@@ -13,11 +13,16 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.FirebaseFirestore;
 import com.tiramisu.android.todolist.Model.StaticVar;
 import com.tiramisu.android.todolist.Model.TaskModel;
 import com.tiramisu.android.todolist.R;
+import com.tiramisu.android.todolist.TAGS;
 import com.tiramisu.android.todolist.Tasks;
 
 import java.util.List;
@@ -28,13 +33,15 @@ public class TaskNotDoneAdapter extends RecyclerView.Adapter<TaskNotDoneAdapter.
 
     private Context context;
     private  List<TaskModel> list;
-    private Tasks tasks;
-    private int counter;
-    public DatabaseReference todoref,categoryref;
+    FirebaseFirestore db = FirebaseFirestore.getInstance();
+    private FirebaseAuth firebaseAuth;
+    private String categoryId;
 
-    public TaskNotDoneAdapter(Context context , List<TaskModel> list) {
+    public TaskNotDoneAdapter(Context context , List<TaskModel> list,String categoryId) {
         this.context=context;
         this.list=list;
+        this.categoryId = categoryId;
+        firebaseAuth = FirebaseAuth.getInstance();
     }
 
     @Override
@@ -47,17 +54,14 @@ public class TaskNotDoneAdapter extends RecyclerView.Adapter<TaskNotDoneAdapter.
 
     @Override
     public void onBindViewHolder(final TaskNotDoneAdapter.MyView holder, final int position) {
-        final TaskModel list1 =list.get(position);
+        final TaskModel task =list.get(position);
         holder.checkBox.setChecked(false);
-        holder.text.setText(list1.getTaskName());
+        holder.text.setText(task.getTaskName());
 
         //Delete button deletes the task
         holder.delete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                todoref = FirebaseDatabase.getInstance().getReference("Todo");
-                categoryref = todoref.child(""+StaticVar.UID+"/Categories");
-                categoryref.child(StaticVar.CATEGORY_ID).child("Tasks").child(list1.getId()).removeValue();
                 list.remove(position);
                 notifyDataSetChanged();
             }
@@ -69,10 +73,16 @@ public class TaskNotDoneAdapter extends RecyclerView.Adapter<TaskNotDoneAdapter.
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
                 if(b)
                 {
+                    Log.d("check",task.getTaskId());
+                    DocumentReference ref = db.collection(TAGS.TODO).document(firebaseAuth.getUid()).collection(TAGS.CATEGORIES).document(categoryId).collection(TAGS.TASKS).document(task.getTaskId());
+                    ref.update(TAGS.TASKDONE,true).addOnSuccessListener(new OnSuccessListener<Void>() {
+                        @Override
+                        public void onSuccess(Void aVoid) {
+                       Log.d("done","done");
+                        }
+                    });
 
-                    todoref = FirebaseDatabase.getInstance().getReference("Todo");
-                    categoryref = todoref.child(""+StaticVar.UID+"/Categories");
-                    categoryref.child(StaticVar.CATEGORY_ID).child("Tasks").child(list1.getId()).child("done").setValue("true");
+
 
 
 
@@ -83,7 +93,6 @@ public class TaskNotDoneAdapter extends RecyclerView.Adapter<TaskNotDoneAdapter.
 
     @Override
     public int getItemCount() {
-        Log.d("oneplus",""+list.size());
         return list.size();
     }
 

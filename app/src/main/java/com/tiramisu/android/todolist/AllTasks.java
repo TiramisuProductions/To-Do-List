@@ -36,11 +36,9 @@ import butterknife.ButterKnife;
  */
 
 public class AllTasks extends AppCompatActivity {
-    private android.support.design.widget.FloatingActionButton addTask;
-    private RecyclerView recyclerView,recyclerView2;
-    private ArrayList<AllTasksModel> selectedlist = new ArrayList<>();
-    private ArrayList<AllTasksModel> unselectedlist = new ArrayList<>();
-    DatabaseReference todoref,categoryref;
+    @BindView(R.id.addTask) RecyclerView addTaskFloatingActionButton;
+    @BindView(R.id.notdone) RecyclerView notDoneRecylerView;
+    @BindView(R.id.done) RecyclerView doneRecylerView;
     @BindView(R.id.category_name) TextView categoryName;
 
     private int taskCounter = 0;
@@ -50,90 +48,11 @@ public class AllTasks extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_all_tasks);
         ButterKnife.bind(this);
-        categoryName.setText(getIntent().getStringExtra("category_name"));
-        categoryId=getIntent().getStringExtra("category_id");
-        todoref = FirebaseDatabase.getInstance().getReference("Todo");
-        categoryref = todoref.child(""+ StaticVar.UID+"/Categories");
-        addTask=(android.support.design.widget.FloatingActionButton) findViewById(R.id.addButton);
-        recyclerView2=(RecyclerView)findViewById(R.id.recyclerView_task2);
-        recyclerView = (RecyclerView) findViewById(R.id.recyclerView_task);
-        recyclerView.setNestedScrollingEnabled(true);
-        recyclerView2.setNestedScrollingEnabled(true);
+
 
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext());
-        recyclerView.setLayoutManager(mLayoutManager);
-        recyclerView.addItemDecoration(new DividerItemDecoration(this, LinearLayoutManager.VERTICAL));
         RecyclerView.LayoutManager mLayoutManager2 = new LinearLayoutManager(getApplicationContext());
-        recyclerView2.setLayoutManager(mLayoutManager2);
-        recyclerView2.addItemDecoration(new DividerItemDecoration(this, LinearLayoutManager.VERTICAL));
 
-
-        todoref.keepSynced(true);
-        categoryref.keepSynced(true);
-
-        categoryref.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                selectedlist.clear();
-                unselectedlist.clear();
-                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-
-                    if (snapshot.child("Tasks") != null)
-
-                    {
-
-
-                        for (DataSnapshot snapshot1 : snapshot.child("Tasks").getChildren()) {
-                            taskCounter++;
-                            AllTasksModel allTasksModel = new AllTasksModel(snapshot.getKey().toString(), snapshot1.getKey().toString(), snapshot1.child("done").getValue().toString()
-                                    , snapshot1.child("dueDate").getValue().toString(),snapshot1.child("dueTime").getValue().toString(), snapshot1.child("reminder").getValue().toString(), snapshot1.child("taskName").getValue().toString());
-
-                            if (allTasksModel.getDone().equals("true")) {
-                                selectedlist.add(allTasksModel);
-                            } else {
-                                unselectedlist.add(allTasksModel);
-                            }
-
-                            if (taskCounter == snapshot.child("Tasks").getChildrenCount()) {
-                                Log.d("Volla","Volla");
-                                taskCounter = 0;
-                                AllTasksDoneAdapter mAdapter = new AllTasksDoneAdapter(AllTasks.this, selectedlist);
-                                AllTasksNotDoneAdapter nAdapter = new AllTasksNotDoneAdapter(AllTasks.this, unselectedlist);
-                                recyclerView.setAdapter(mAdapter);
-                                recyclerView2.setAdapter(nAdapter);
-
-
-                            }
-                        }
-
-
-
-                    }
-                }
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
-
-
-        addTask.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent=new Intent(AllTasks.this,AddNewTask.class);
-                intent.putExtra("category_id",getIntent().getStringExtra("category_id"));
-                intent.putExtra("alltasks",true);
-                ActivityOptionsCompat activityOptionsCompat = ActivityOptionsCompat.makeSceneTransitionAnimation(AllTasks.this,addTask,"addtask");
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-                    startActivity(intent,activityOptionsCompat.toBundle());
-                }
-                else {
-                    startActivity(intent);
-                }
-            }
-        });
 
 
 

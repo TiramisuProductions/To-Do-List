@@ -70,6 +70,7 @@
         <activity android:name=".AddNewTask">
         </activity>
         <activity android:name=".AllTasks"></activity>
+        <activity android:name=".SignUpActivity"></activity>
 
         <service
             android:name=".service.FirebaseBackgroundService"

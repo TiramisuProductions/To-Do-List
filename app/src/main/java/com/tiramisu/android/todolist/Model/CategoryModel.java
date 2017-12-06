@@ -1,29 +1,38 @@
 package com.tiramisu.android.todolist.Model;
 
 
+import com.google.firebase.firestore.Exclude;
+
 public class CategoryModel {
 
-    String name;
-    String id;
+    String categoryName;
 
-    public String getId() {
-        return id;
+    @Exclude String categoryId;
+
+
+    @Exclude public String getCategoryId() {
+        return categoryId;
     }
 
-    public void setId(String id) {
-        this.id = id;
+   @Exclude public void setCategoryId(String categoryId) {
+        this.categoryId = categoryId;
     }
 
-    public CategoryModel(String id,String name) {
-        this.name = name;
-        this.id = id;
+    public CategoryModel() {
     }
 
-    public String getName() {
-        return name;
+    public String getCategoryName() {
+        return categoryName;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setCategoryName(String categoryName) {
+        this.categoryName = categoryName;
     }
+
+    public CategoryModel(String categoryName) {
+        this.categoryName = categoryName;
+
+    }
+
+
 }

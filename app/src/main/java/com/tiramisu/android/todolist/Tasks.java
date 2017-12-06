@@ -3,6 +3,7 @@ package com.tiramisu.android.todolist;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
+import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -17,13 +18,26 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.EventListener;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.FirebaseFirestoreSettings;
+import com.google.firebase.firestore.QuerySnapshot;
+import com.tiramisu.android.todolist.Adapter.CategoriesAdapter;
 import com.tiramisu.android.todolist.Adapter.TaskDoneAdapter;
 import com.tiramisu.android.todolist.Adapter.TaskNotDoneAdapter;
+import com.tiramisu.android.todolist.Model.CategoryModel;
 import com.tiramisu.android.todolist.Model.StaticVar;
 import com.tiramisu.android.todolist.Model.TaskModel;
 import com.tiramisu.android.todolist.Model.WorldEvent;
@@ -40,129 +54,85 @@ import butterknife.ButterKnife;
 
 public class Tasks extends AppCompatActivity {
     private android.support.design.widget.FloatingActionButton addTask;
-    private RecyclerView recyclerView,recyclerView2;
-    private ArrayList<TaskModel> selectedlist = new ArrayList<>();
-    private ArrayList<TaskModel> unselectedlist = new ArrayList<>();
-    DatabaseReference todoref,categoryref;
-    @BindView(R.id.category_name) TextView categoryName;
-
-    private int taskCounter = 0;
+    @BindView(R.id.recyclerviewdone) RecyclerView taskDoneRecylerview;
+    @BindView(R.id.recyclerviewnotdone) RecyclerView taskNotDoneRecylerview;
+    @BindView(R.id.categoryname) TextView categoryNameTextView;
     private String categoryId;
-
-
+    private ArrayList<TaskModel> taskDoneList = new ArrayList<>();
+    private ArrayList<TaskModel> taskNotDoneList = new ArrayList<>();
+    private TaskDoneAdapter taskDoneAdapter;
+    private TaskNotDoneAdapter taskNotDoneAdapter;
+    FirebaseFirestore db = FirebaseFirestore.getInstance();
+    private FirebaseAuth firebaseAuth;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_tasks);
         ButterKnife.bind(this);
-        categoryName.setText(getIntent().getStringExtra("category_name"));
-        categoryId=getIntent().getStringExtra("category_id");
-        StaticVar.CATEGORY_ID =categoryId;
-        todoref = FirebaseDatabase.getInstance().getReference("Todo");
-        categoryref = todoref.child(""+ StaticVar.UID+"/Categories");
+        firebaseAuth = FirebaseAuth.getInstance();
+        categoryId=getIntent().getStringExtra(TAGS.CATEGORYID);
         addTask=(android.support.design.widget.FloatingActionButton) findViewById(R.id.addButton);
-        recyclerView2=(RecyclerView)findViewById(R.id.recyclerView_task2);
-        recyclerView = (RecyclerView) findViewById(R.id.recyclerView_task);
-        recyclerView.setNestedScrollingEnabled(true);
-        recyclerView2.setNestedScrollingEnabled(true);
-
-        InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+        taskDoneRecylerview.setNestedScrollingEnabled(true);
+        taskNotDoneRecylerview.setNestedScrollingEnabled(true);
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext());
-        recyclerView.setLayoutManager(mLayoutManager);
-        recyclerView.addItemDecoration(new DividerItemDecoration(this, LinearLayoutManager.VERTICAL));
+        taskDoneRecylerview.setLayoutManager(mLayoutManager);
+        taskDoneRecylerview.addItemDecoration(new DividerItemDecoration(this, LinearLayoutManager.VERTICAL));
         RecyclerView.LayoutManager mLayoutManager2 = new LinearLayoutManager(getApplicationContext());
-        recyclerView2.setLayoutManager(mLayoutManager2);
-        recyclerView2.addItemDecoration(new DividerItemDecoration(this, LinearLayoutManager.VERTICAL));
+        taskNotDoneRecylerview.setLayoutManager(mLayoutManager2);
+        taskNotDoneRecylerview.addItemDecoration(new DividerItemDecoration(this, LinearLayoutManager.VERTICAL));
 
 
+        categoryNameTextView.setText(getIntent().getStringExtra(TAGS.CATEGORYNAME));
+
+        FirebaseFirestoreSettings settings = new FirebaseFirestoreSettings.Builder()
+                .setPersistenceEnabled(true)
+                .build();
+        db.setFirestoreSettings(settings);
 
 
+getTasks();
+
+addTask.setOnClickListener(new View.OnClickListener() {
+    @Override
+    public void onClick(View view) {
+        Intent i = new Intent(Tasks.this,AddNewTask.class);
+        i.putExtra(TAGS.CATEGORYID,categoryId);
+        startActivity(i);
+    }
+});
+
+    }
 
 
+    public void getTasks(){
 
-        categoryref.child(categoryId).child("Tasks").addValueEventListener(new ValueEventListener() {
+        db.collection(TAGS.TODO).document(firebaseAuth.getUid()).collection(TAGS.CATEGORIES).document(categoryId).collection(TAGS.TASKS).addSnapshotListener(new EventListener<QuerySnapshot>() {
+
             @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
+            public void onEvent(QuerySnapshot documentSnapshots, FirebaseFirestoreException e) {
+                taskDoneList.clear();
+                taskNotDoneList.clear();
+                for(DocumentSnapshot documentSnapshot : documentSnapshots.getDocuments()){
+                    TaskModel taskModel = documentSnapshot.toObject(TaskModel.class);
 
-                selectedlist.clear();
-                unselectedlist.clear();
-                for(DataSnapshot snapshot : dataSnapshot.getChildren())
-                {
+                    taskModel.setTaskId(documentSnapshot.getId());
+                    Log.d("qwerty", taskModel.getTaskName() + taskModel.getTaskName()+taskModel.isTaskDone());
 
-                    TaskModel taskModel = new TaskModel( snapshot.getKey(),snapshot.child("taskName").getValue().toString(),snapshot.child("dueDate").getValue().toString(),snapshot.child("dueTime").getValue().toString(),snapshot.child("reminder").getValue().toString(),snapshot.child("done").getValue().toString());
-                    if(taskModel.getDone().equals("true"))
-                    {
-                        Log.d("Done","Done");
-                        selectedlist.add(taskModel);
+                    if(taskModel.isTaskDone()){
+                        taskDoneList.add(taskModel);
                     }
                     else {
-                        Log.d("NotDone","NotDone");
-                        unselectedlist.add(taskModel);
+                        taskNotDoneList.add(taskModel);
                     }
-                    snapshot.getKey();
-
-
-            taskCounter++;
-
-                    if(taskCounter==dataSnapshot.getChildrenCount())
-                    {
-                        taskCounter=0;
-                        TaskDoneAdapter mAdapter = new TaskDoneAdapter(Tasks.this, selectedlist);
-                        TaskNotDoneAdapter nAdapter= new TaskNotDoneAdapter(Tasks.this,unselectedlist);
-                        recyclerView.setAdapter(mAdapter);
-                        recyclerView2.setAdapter(nAdapter);
-
-
-                    }
-
-
-
-                    }
-
-
 
                 }
-
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
+                taskDoneAdapter = new TaskDoneAdapter(Tasks.this,taskDoneList,categoryId);
+                taskNotDoneAdapter = new TaskNotDoneAdapter(Tasks.this,taskNotDoneList,categoryId);
+                taskDoneRecylerview.setAdapter(taskDoneAdapter);
+                taskNotDoneRecylerview.setAdapter(taskNotDoneAdapter);
 
             }
         });
-
-
-
-
-
-
-
-
-
-        addTask.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                Intent intent=new Intent(Tasks.this,AddNewTask.class);
-                intent.putExtra("category_id",getIntent().getStringExtra("category_id"));
-                intent.putExtra("alltasks",false);
-                ActivityOptionsCompat activityOptionsCompat = ActivityOptionsCompat.makeSceneTransitionAnimation(Tasks.this,addTask,"addtask");
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-                    startActivity(intent,activityOptionsCompat.toBundle());
-                }
-                else {
-                    startActivity(intent);
-                }
-            }
-        });
-
-
-
-
-
-
-
-
-
     }
 
 

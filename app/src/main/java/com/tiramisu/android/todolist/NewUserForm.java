@@ -1,11 +1,14 @@
 package com.tiramisu.android.todolist;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.icu.util.Calendar;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.RequiresApi;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -16,16 +19,31 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
+import com.google.firebase.firestore.QuerySnapshot;
+import com.tiramisu.android.todolist.Model.CategoryModel;
 import com.tiramisu.android.todolist.Model.Details;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.tiramisu.android.todolist.Model.TaskModel;
+import com.tiramisu.android.todolist.Model.UserModel;
 import com.tiramisu.android.todolist.Model.UserUID;
+
+import java.util.HashMap;
+import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -36,34 +54,29 @@ import butterknife.ButterKnife;
 public class NewUserForm extends AppCompatActivity {
 
     //@BindView(R.id.dob) EditText dob;
-    @BindView(R.id.name) EditText name;
-    @BindView(R.id.username) EditText username;
-    @BindView(R.id.genderradiogroup) RadioGroup GenderGroup;
-    @BindView(R.id.male) RadioButton maleradio;
-    @BindView(R.id.female) RadioButton femaleradio;
-    @BindView(R.id.other) RadioButton otherradio;
-    @BindView(R.id.done) ImageView done;
-    @BindView(R.id.progressbar) ProgressBar progressBar;
+    @BindView(R.id.name) EditText nameEditText;
+    @BindView(R.id.username) EditText userNameEditText;
+    @BindView(R.id.genderradiogroup) RadioGroup genderGroup;
+    @BindView(R.id.male) RadioButton maleRadio;
+    @BindView(R.id.female) RadioButton femaleRadio;
+    @BindView(R.id.other) RadioButton otherRadio;
+    @BindView(R.id.done) ImageView doneImageView;
 
-    private DatabaseReference UserRef;
-    private DatabaseReference refFirst;
-    private boolean userfound;
-    //String d_o_b;
-    String genderselected;
-    private int UserCounter;
-    private boolean searchfinished;
+    @BindView(R.id.newuserformlayout) RelativeLayout newUserFormLayout;
+    @BindView(R.id.usernameprogressbar) ProgressBar userNameProgressBar;
+    @BindView(R.id.usernameavailable) TextView userNameAvaiable;
+    @BindView(R.id.usernamenotavailable) TextView userNameNotAvailable;
+    String name,uid,email,username,gender;
+
+    private boolean userExist = false,dataArrived = false;
+
 
     //private final   Calendar myCalendar = Calendar.getInstance();
     private  Intent i;
+    FirebaseFirestore db = FirebaseFirestore.getInstance();
+    SharedPreferences sharedpreferences;
 
-    String Category_Name1 = "Personal";
-    String Category_Name2 = "Work";
-    String Goal_Name1 ="Exercise",Goal_Name2="Build a Skill",Goal_Name3 = "Self Time ";
-    String date1 = "13-10-1996",name1 = "code my project",status1 = "not done",time1 = "12:00";
-    String date2 = "13-10-1996",name2 = "code my project",status2 = "not done",time2 = "12:00";
-    String datez = "13-10-2000",namez = "code his project",statusz = "done",timez = "13:00";
-    SharedPreferences.Editor editor;
-    SharedPreferences pref;
+
 
 
     @Override
@@ -71,61 +84,21 @@ public class NewUserForm extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_newuserform);
         ButterKnife.bind(this);
-        pref = getApplicationContext().getSharedPreferences("MyPref", 0); // 0 - for private mode
-        editor = pref.edit();
-
         i = getIntent();
-
-        Toast.makeText(NewUserForm.this, i.getStringExtra("name") + i.getStringExtra("email") + i.getStringExtra("uid"), Toast.LENGTH_LONG).show();
-        name.setText(i.getStringExtra("name"));
-
-        maleradio.setSelected(true);
-
-        UserRef = FirebaseDatabase.getInstance().getReference("Users");
-        refFirst = FirebaseDatabase.getInstance().getReference();
-
-        if (i.getStringExtra("name") != null)
-
-        {
-            username.setText(i.getStringExtra("name").toLowerCase().replaceAll("\\s",""));
-        }
+        checkIfNull();
+        nameEditText.setText(name);
+        sharedpreferences =  getSharedPreferences(TAGS.SHAREDPREF, Context.MODE_PRIVATE);
 
 
 
-        //updateLabel();
-
-        usernamevalidation();
-
-        /*final DatePickerDialog.OnDateSetListener date = new DatePickerDialog.OnDateSetListener() {
-
+        doneImageView.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onDateSet(DatePicker view, int year, int monthOfYear,
-                                  int dayOfMonth) {
-                // TODO Auto-generated method stub
-                myCalendar.set(Calendar.YEAR, year);
-                myCalendar.set(Calendar.MONTH, monthOfYear);
-                myCalendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
-                //updateLabel();
+            public void onClick(View view) {
+                userRegister();
             }
+        });
 
-        };*/
-
-        //dob.requestFocus();
-
-        GenderGroup.check(R.id.male);
-
-        /*dob.setOnClickListener(new View.OnClickListener() {
-
-            @Override
-            public void onClick(View v) {
-                // TODO Auto-generated method stub
-                new DatePickerDialog(NewUserForm.this, date, myCalendar
-                        .get(Calendar.YEAR), myCalendar.get(Calendar.MONTH),
-                        myCalendar.get(Calendar.DAY_OF_MONTH)).show();
-            }
-        });*/
-
-        username.addTextChangedListener(new TextWatcher() {
+        userNameEditText.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
 
@@ -134,220 +107,174 @@ public class NewUserForm extends AppCompatActivity {
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
 
-                usernamevalidation();
-
-
-
-
-                Log.d("textchange",charSequence.toString());
             }
 
             @Override
             public void afterTextChanged(Editable editable) {
-
-            }
-        });
-
-        done.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-
-
-
-
-                if(validation())
+                Log.d(editable.toString(),"dad");
+                if(editable.toString().contains(" "))
                 {
-                    initialisation(i.getStringExtra("email"),i.getStringExtra("uid"));
+                    userNameEditText.setError("No Spaces Allowed");
+                    userNameAvaiable.setVisibility(View.INVISIBLE);
+                    userNameNotAvailable.setVisibility(View.INVISIBLE);
+                    userNameProgressBar.setVisibility(View.INVISIBLE);
+
                 }
-
-
-
-
-            }
-        });
-
-
-
-
-        GenderGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(RadioGroup radioGroup, int i) {
-
-                RadioButton rb = (RadioButton) radioGroup.findViewById(i);
-                if (null != rb && i > -1) {
-                    genderselected = ""+rb.getText();
-                    Toast.makeText(NewUserForm.this, rb.getText(), Toast.LENGTH_SHORT).show();
-                }
-
-            }
-        });
-
-    }
-
-    /*@RequiresApi(api = Build.VERSION_CODES.N)
-    private void updateLabel() {
-        String myFormat = "MM/dd/yy"; //In which you need put here
-        SimpleDateFormat sdf = new SimpleDateFormat(myFormat, Locale.ENGLISH);
-        //d_o_b = sdf.format(myCalendar.getTime());//////////////////////
-        //dob.setText(sdf.format(myCalendar.getTime()));
-    }*/
-
-
-
-
-    public void initialisation(String email,String Uid){
-
-        UserUID user = new UserUID(email, Uid,username.getText().toString().toLowerCase().replaceAll("\\s",""));
-        String id =  UserRef.push().getKey();
-        UserRef.child(id).setValue(user);
-
-        createFirstStructure();
-
-
-        Toast.makeText(NewUserForm.this,"User Registered",Toast.LENGTH_LONG).show();
-
-        Intent intent = new Intent(getApplicationContext(),Home.class);
-        startActivity(intent);
-    }
-
-
-
-    public boolean validation()
-    {
-        if(name.getText().toString().equals(""))
-        {
-            name.setError("Please Enter Name");
-            return  false;
-        }
-
-        if(username.getText().toString().equals(""))
-        {
-            username.setError("Please Enter Username");
-
-            return  false;
-        }
-
-        if(userfound==true)
-        {
-            return false;
-        }
-
-
-
-        return  true;
-
-    }
-
-
-
-
-
-
-    public void usernamevalidation()
-    {
-
-        progressBar.setVisibility(View.VISIBLE);
-        userfound = false;
-
-
-        FirebaseDatabase.getInstance().getReference().child("Users")
-                .addValueEventListener(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(DataSnapshot dataSnapshot) {
-                        for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                            System.out.println("shammu " + dataSnapshot.getChildrenCount());
-                            UserUID uid = snapshot.getValue(UserUID.class);
-                            UserCounter++;
-                            if (uid.getUsername().toString().trim().equals(username.getText().toString().trim().toLowerCase().replaceAll("\\s",""))) {
-                                userfound = true;
-                                Toast.makeText(NewUserForm.this, "User Found", Toast.LENGTH_LONG).show();
-                                username.setError("Username Exist ");
-                                progressBar.setVisibility(View.INVISIBLE);
-                            }
-
-                            if (UserCounter == dataSnapshot.getChildrenCount()) {
-
-                                if (userfound == true) {
-                                    username.setError("Username Exsist ");
-                                } else {
-
-
-                                }
-
+                else{
+                    userNameAvaiable.setVisibility(View.INVISIBLE);
+                    userNameNotAvailable.setVisibility(View.INVISIBLE);
+                    userNameProgressBar.setVisibility(View.VISIBLE);
+                    Query capitalCities = db.collection("Users").whereEqualTo("userName", editable.toString());
+                    capitalCities.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                        @Override
+                        public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                            QuerySnapshot document = task.getResult();
+                            Log.d("test",""+document.size());
+                            if(document.size()>0){
+                                userExist = true;
+                                dataArrived = true;
+                                userNameProgressBar.setVisibility(View.INVISIBLE);
+                                userNameAvaiable.setVisibility(View.INVISIBLE);
+                                userNameNotAvailable.setVisibility(View.VISIBLE);
 
                             }
+                            else {
+                                userExist = false;
+                                dataArrived = true;
+                                userNameProgressBar.setVisibility(View.INVISIBLE);
+                                userNameNotAvailable.setVisibility(View.INVISIBLE);
+                                userNameAvaiable.setVisibility(View.VISIBLE);
+                            }
+
+
+
                         }
-                    }
-
-                    @Override
-                    public void onCancelled(DatabaseError databaseError) {
-                    }
-                });
+                    });
+                }
 
 
+            }
+        });
 
 
 
     }
 
 
-
-    /*public boolean validatedate()
+    private void checkIfNull () //checking if any User Auth values are null
     {
-        try {
-            SimpleDateFormat dateFormat = new SimpleDateFormat("MM/dd/yy");
-            String date = ((EditText) findViewById(R.id.dob)).getText().toString(); // EditText to check
-            java.util.Date parsedDate = dateFormat.parse(date);
-            java.sql.Timestamp timestamp = new java.sql.Timestamp(parsedDate.getTime());
-            // If the string can be parsed in date, it matches the SimpleDateFormat
-            // Do whatever you want to do if String matches SimpleDateFormat.
-
-            Toast.makeText(NewUserForm.this,"It is A Date",Toast.LENGTH_LONG).show();
-            return  true;
+        if(i.getStringExtra("email")==null)
+        {
+            email = " ";
         }
-        catch (java.text.ParseException e) {
-            // Else if there's an exception, it doesn't
-            // Do whatever you want to do if it doesn't.
-            Toast.makeText(NewUserForm.this,"It is Not A Date",Toast.LENGTH_LONG).show();
-            return false;
-
-
+        else{
+            email = i.getStringExtra("email");
+         }
+        if(i.getStringExtra("name")==null)
+        {
+            name = " ";
         }
-    }*/
-
-    private void createFirstStructure(){
-
-        String Uid = i.getStringExtra("uid");
-
-        String key_id1 = refFirst.push().getKey();
-        String key_id2 = refFirst.push().getKey();
-        String key_id3 = refFirst.push().getKey();
-        String key_id4 = refFirst.push().getKey();
-        String key_id5 = refFirst.push().getKey();
-        String key_id6 = refFirst.push().getKey();
-        String key_id7 = refFirst.push().getKey();
-
-        Details details = new Details(key_id1,name.getText().toString(),username.getText().toString(),genderselected);
-
-        refFirst.child("Todo").child(Uid).child("Details").child(key_id1).setValue(details);
-        long millis = System.currentTimeMillis();
-        Log.d("lastupdated",String.valueOf(millis));
-
-        //category 1,task1
-        refFirst.child("Todo").child(Uid).child("Categories").child(key_id2).child("Category_Name").setValue(Category_Name1);
-        //task2
-        //category 2,task1
-        refFirst.child("Todo").child(Uid).child("Categories").child(key_id4).child("Category_Name").setValue(Category_Name2);
-
-        //Goals
-        refFirst.child("Todo").child(Uid).child("Goals").child(key_id3).child("Goal_Name").setValue(Goal_Name1);
-        refFirst.child("Todo").child(Uid).child("Goals").child(key_id5).child("Goal_Name").setValue(Goal_Name2);
-        refFirst.child("Todo").child(Uid).child("Goals").child(key_id6).child("Goal_Name").setValue(Goal_Name3);
+        else{
+            name = i.getStringExtra("name");
+        }
+        if(i.getStringExtra("uid")==null)
+        {
+            uid = " ";
+        }
+        else{
+            uid = i.getStringExtra("uid");
+        }
+    }
 
 
+    private void userRegister(){
+
+        //Values into Variables
+        int checkedRadioButtonId = genderGroup.getCheckedRadioButtonId();
+        if(checkedRadioButtonId == R.id.male)
+        {
+        gender = "M";
+        }
+        else if (checkedRadioButtonId == R.id.female){
+            gender ="F";
+        }
+        else{
+            gender = "O";
+        }
+        username = userNameEditText.getText().toString();
+
+
+        //Validation
+        if(username.trim().equals(""))
+        {
+            userNameEditText.setError("Enter A Username ");
+        }
+        else if (genderGroup.getCheckedRadioButtonId() == -1)
+        {
+            showSnackbar("Select A Gender");
+        }else if(nameEditText.equals("")){
+            nameEditText.setError("Enter A Name");
+        }
+        else if(dataArrived&&userExist){
+            userNameEditText.setError("Username Exist");
+        }
+            else if(dataArrived && !userExist){
+            UserModel userData = new UserModel(email,name,uid,username,gender);
+            db.collection("Users").document(email).set(userData);
+            initializeStructure();
+            SharedPreferences.Editor editor = sharedpreferences.edit();
+            editor.putString(TAGS.SHAREDPREFUID,uid);
+            editor.commit();
+            startActivity(new Intent(NewUserForm.this,Home.class));
+            finish();
+        }
+        else {
+                showSnackbar("Please Connect To Internet To Validate Username");
+        }
+
+    }
+
+
+    private void initializeStructure(){
+
+        CategoryModel category = new CategoryModel ("Chores");
+        db.collection(TAGS.TODO).document(uid).collection(TAGS.CATEGORIES).add(category).addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+            @Override
+            public void onSuccess(DocumentReference documentReference) {
+                Log.d("NewUserForm", "DocumentSnapshot added with ID: " + documentReference.getId());
+               // init1.put("taskName","Code");
+              //  init1.put("taskDueDate","1201002");
+              //  db.collection("Todo").document(uid).collection("categories").document(documentReference.getId()).collection("tasks").add(init1);
+            }
+        });
 
 
 
     }
+
+    private void showSnackbar(String message){
+        Snackbar snackbar = Snackbar.make(newUserFormLayout,message, Snackbar.LENGTH_SHORT);
+        snackbar.show();
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 }

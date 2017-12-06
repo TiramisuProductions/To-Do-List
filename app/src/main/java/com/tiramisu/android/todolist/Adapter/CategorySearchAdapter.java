@@ -11,6 +11,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.tiramisu.android.todolist.Model.CategoryModel;
 import com.tiramisu.android.todolist.Model.CategorySuggestionModel;
 import com.tiramisu.android.todolist.R;
 
@@ -23,10 +24,10 @@ import java.util.List;
 
 public class CategorySearchAdapter extends RecyclerView.Adapter<CategorySearchAdapter.MyViewHolder> {
 
-    private List<CategorySuggestionModel> list_item = new ArrayList<>() ;
+    private List<CategoryModel> list_item = new ArrayList<>() ;
     public Context mcontext;
 
-    public CategorySearchAdapter(List<CategorySuggestionModel> list, Context context){
+    public CategorySearchAdapter(List<CategoryModel> list, Context context){
         list_item =list;
         mcontext = context;
     }
@@ -43,15 +44,15 @@ public class CategorySearchAdapter extends RecyclerView.Adapter<CategorySearchAd
     @Override
     public void onBindViewHolder(final CategorySearchAdapter.MyViewHolder viewHolder, final int position) {
 
-        viewHolder.category_name.setText(list_item.get(position).getSuggestion());
+        viewHolder.category_name.setText(list_item.get(position).getCategoryName());
         viewHolder.category_name.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
                 Toast.makeText(mcontext, ""+list_item.get(position),Toast.LENGTH_LONG).show();
 
-                EditText txtView = (EditText) ((Activity)mcontext).findViewById(R.id.search_category);
-                txtView.setText(list_item.get(position).getSuggestion());
+                EditText txtView = (EditText) ((Activity)mcontext).findViewById(R.id.searchcategory);
+                txtView.setText(list_item.get(position).getCategoryName());
 
             }
         });

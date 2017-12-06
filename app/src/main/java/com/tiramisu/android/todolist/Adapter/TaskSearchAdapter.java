@@ -44,8 +44,8 @@ public class TaskSearchAdapter extends RecyclerView.Adapter<TaskSearchAdapter.My
 
                 Toast.makeText(mcontext, ""+items.get(position),Toast.LENGTH_LONG).show();
 
-                EditText txt = (EditText) ((Activity)mcontext).findViewById(R.id.addtask);
-                txt.setText(items.get(position).getSuggestion());
+              //  EditText txt = (EditText) ((Activity)mcontext).findViewById(R.id.addtask);
+               // txt.setText(items.get(position).getSuggestion());
 
             }
         });

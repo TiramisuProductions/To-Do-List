@@ -10,7 +10,7 @@
 
 
     <EditText
-        android:id="@+id/addtask"
+        android:id="@+id/task"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical"
@@ -24,11 +24,11 @@
 
 
     <android.support.v7.widget.RecyclerView
-        android:id="@+id/search_recycler"
+        android:id="@+id/tasksearch"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:padding="8dp"
-        android:layout_below="@+id/addtask"
+        android:layout_below="@+id/task"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
         android:layout_marginTop="21dp" />
@@ -39,13 +39,13 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:src="@drawable/ic_check_black_24dp"
-        android:layout_alignTop="@+id/addtask"
+        android:layout_alignTop="@+id/task"
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true" />
 
 
     <RelativeLayout
-        android:id="@+id/search_ll"
+        android:id="@+id/datetime"
         android:layout_alignParentBottom="true"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">

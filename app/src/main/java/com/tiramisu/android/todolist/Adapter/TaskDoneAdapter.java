@@ -12,11 +12,16 @@ import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.FirebaseFirestore;
 import com.tiramisu.android.todolist.Model.StaticVar;
 import com.tiramisu.android.todolist.Model.TaskModel;
 import com.tiramisu.android.todolist.R;
+import com.tiramisu.android.todolist.TAGS;
 import com.tiramisu.android.todolist.Tasks;
 
 import java.util.List;
@@ -26,11 +31,17 @@ public class TaskDoneAdapter extends RecyclerView.Adapter<TaskDoneAdapter.MyView
     private Context context;
     private List<TaskModel> list;
     private Tasks tasks;
-    DatabaseReference todoref,categoryref;
+    private FirebaseAuth firebaseAuth;
+    private String categoryId;
+    FirebaseFirestore db ;
 
-    public TaskDoneAdapter(Context context , List<TaskModel> list) {
+    public TaskDoneAdapter(Context context , List<TaskModel> list,String categoryId) {
         this.list=list;
         this.context=context;
+        this.categoryId = categoryId;
+        firebaseAuth = FirebaseAuth.getInstance();
+        db = FirebaseFirestore.getInstance();
+
     }
     @Override
     public TaskDoneAdapter.MyView onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -41,18 +52,15 @@ public class TaskDoneAdapter extends RecyclerView.Adapter<TaskDoneAdapter.MyView
 
     @Override
     public void onBindViewHolder(final TaskDoneAdapter.MyView holder, final int position) {
-        final TaskModel list1 =list.get(position);
+        final TaskModel task =list.get(position);
         holder.checkBox.setChecked(true);
-        holder.text.setText(list1.getTaskName());
+        holder.text.setText(task.getTaskName());
         holder.text.setPaintFlags(holder.text.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
 
         //deletes the done task
         holder.delete.setOnClickListener(new View.OnClickListener() {
     @Override
     public void onClick(View v) {
-        todoref = FirebaseDatabase.getInstance().getReference("Todo");
-        categoryref = todoref.child(""+StaticVar.UID+"/Categories");
-        categoryref.child(StaticVar.CATEGORY_ID).child("Tasks").child(list1.getId()).removeValue();
         list.remove(position);
         notifyDataSetChanged();
     }
@@ -64,9 +72,12 @@ public class TaskDoneAdapter extends RecyclerView.Adapter<TaskDoneAdapter.MyView
 
                 if(!isChecked)
                 {
-                    todoref = FirebaseDatabase.getInstance().getReference("Todo");
-                    categoryref = todoref.child(""+StaticVar.UID+"/Categories");
-                    categoryref.child(StaticVar.CATEGORY_ID).child("Tasks").child(list1.getId()).child("done").setValue("false");
+                    DocumentReference ref = db.collection(TAGS.TODO).document(firebaseAuth.getUid()).collection(TAGS.CATEGORIES).document(categoryId).collection(TAGS.TASKS).document(task.getTaskId());
+                    ref.update(TAGS.TASKDONE,false).addOnSuccessListener(new OnSuccessListener<Void>() {
+                        @Override
+                        public void onSuccess(Void aVoid) {
+                            Log.d("done","done");
+                        }});
                 }
             }
         });

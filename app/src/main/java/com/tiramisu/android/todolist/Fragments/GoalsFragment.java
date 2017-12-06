@@ -25,17 +25,17 @@ import com.tiramisu.android.todolist.R;
 import java.util.ArrayList;
 import java.util.List;
 
+import butterknife.BindView;
+
 /**
  * A simple {@link Fragment} subclass.
  */
 public class GoalsFragment extends Fragment {
 
-    private RecyclerView mRecyclerView;
-    public GoalsAdapter mAdapter;
+    @BindView(R.id.goalsRecyclerView) RecyclerView goalRecylerView;
+    public GoalsAdapter adapter;
     private RecyclerView.LayoutManager mLayoutManager;
-    private DatabaseReference toDoRef,goalsRef,goalsref2;
     private List<GoalsModel> goalsList=new ArrayList<>();
-    int Counter;
 
 
     public GoalsFragment() {
@@ -51,96 +51,8 @@ public class GoalsFragment extends Fragment {
 
         mLayoutManager=new GridLayoutManager(getActivity().getApplicationContext(),2);
 
-        mRecyclerView=(RecyclerView)rootView.findViewById(R.id.goalsRecyclerView);
-        mRecyclerView.setLayoutManager(mLayoutManager);
-
-
-        toDoRef = FirebaseDatabase.getInstance().getReference("Todo");
-        toDoRef.keepSynced(true);
-        goalsRef = toDoRef.child(""+ StaticVar.UID);
-        goalsref2 = goalsRef.child("Goals");
-        goalsRef.keepSynced(true);
-       // mRecyclerView.setAdapter(mAdapter);
-
-
-
-        goalsref2.addChildEventListener(new ChildEventListener() {
-            @Override
-            public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-                Log.d("Boom",""+dataSnapshot.getChildrenCount());
-            }
-
-            @Override
-            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
-
-            }
-
-            @Override
-            public void onChildRemoved(DataSnapshot dataSnapshot) {
-
-            }
-
-            @Override
-            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
-
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
-
-
-
-        goalsref2.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-
-
-                //goalsList.add(new GoalsModel("goals","goals"));
-
-
-
-              //  mRecyclerView.setAdapter(mAdapter);
-                goalsList = new ArrayList<GoalsModel>();
-                for(DataSnapshot dataSnapshot1 :dataSnapshot.getChildren()){
-
-                 //   GoalsModel value = dataSnapshot1.getValue(GoalsModel.class);
-                   // GoalsModel fire = new GoalsModel("AA","a");
-                    //String name = value.getName();
-
-                    Counter++;
-
-                    Log.d("qwerty",""+dataSnapshot.getChildrenCount());
-                    Log.d("hello","ello");
-
-                    GoalsModel goal_name = new GoalsModel(dataSnapshot1.getKey(),dataSnapshot1.child("Goal_Name").getValue().toString());
-                    goalsList.add(goal_name);
-
-                    if(Counter==dataSnapshot.getChildrenCount())
-                    {
-                        mAdapter=new GoalsAdapter(getActivity(),goalsList);
-                        mRecyclerView.setAdapter(mAdapter);
-                    }
-                  //  fire.setName(name);
-
-
-
-                    //goalsList.add(fire);
-
-                }
-
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
-
-
-
+        goalRecylerView=(RecyclerView)rootView.findViewById(R.id.goalsRecyclerView);
+        goalRecylerView.setLayoutManager(mLayoutManager);
 
 
 

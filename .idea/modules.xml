@@ -2,10 +2,10 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/Firebaseservice.iml" filepath="$PROJECT_DIR$/Firebaseservice.iml" />
+      <module fileurl="file://F:\AndroidProjects\To-Do-List\Firebaseservice.iml" filepath="F:\AndroidProjects\To-Do-List\Firebaseservice.iml" />
       <module fileurl="file://$PROJECT_DIR$/To-Do-List.iml" filepath="$PROJECT_DIR$/To-Do-List.iml" />
-      <module fileurl="file://$PROJECT_DIR$/To-Do-List-shammuforyou.iml" filepath="$PROJECT_DIR$/To-Do-List-shammuforyou.iml" />
-      <module fileurl="file://$PROJECT_DIR$/Todolist.iml" filepath="$PROJECT_DIR$/Todolist.iml" />
+      <module fileurl="file://F:\AndroidProjects\To-Do-List\To-Do-List-shammuforyou.iml" filepath="F:\AndroidProjects\To-Do-List\To-Do-List-shammuforyou.iml" />
+      <module fileurl="file://F:\AndroidProjects\To-Do-List\Todolist.iml" filepath="F:\AndroidProjects\To-Do-List\Todolist.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
     </modules>
   </component>

@@ -1,6 +1,7 @@
 package com.tiramisu.android.todolist;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
@@ -14,9 +15,11 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 
-
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.FirebaseFirestoreSettings;
 import com.tiramisu.android.todolist.Fragments.CalendarFragment;
 import com.tiramisu.android.todolist.Fragments.CategoriesFragment;
 import com.tiramisu.android.todolist.Fragments.GoalsFragment;
@@ -25,7 +28,7 @@ import com.tiramisu.android.todolist.Model.StaticVar;
 
 import butterknife.ButterKnife;
 
-import static com.tiramisu.android.todolist.TAGS.MyPREFERENCES;
+
 import static com.tiramisu.android.todolist.TAGS.SHAREDPREFUID;
 
 
@@ -34,7 +37,8 @@ public class Home extends AppCompatActivity
 
      ImageView overflowmenu;
     SharedPreferences sharedpreferences;
-
+    public static String uid;
+    private FirebaseAuth firebaseAuth;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,21 +47,16 @@ public class Home extends AppCompatActivity
 
         ButterKnife.bind(this);
 
-        sharedpreferences = getSharedPreferences(MyPREFERENCES, Context.MODE_PRIVATE);
-
+        firebaseAuth = FirebaseAuth.getInstance();
         setContentView(R.layout.activity_home);
         overflowmenu = (ImageView)findViewById(R.id.overflowmenu);
 
+        sharedpreferences =  getSharedPreferences(TAGS.SHAREDPREF, Context.MODE_PRIVATE);
+        uid = sharedpreferences.getString(TAGS.SHAREDPREFUID,null);
+        showToast(uid);
 
-        if(getIntent()!=null) {
-            SharedPreferences.Editor editor = sharedpreferences.edit();
-            editor.putString(SHAREDPREFUID, getIntent().getStringExtra("uid"));
-            editor.commit();
 
-        }
 
-        StaticVar.UID = sharedpreferences.getString(SHAREDPREFUID,null);
-        StaticVar.UID= "ZQqOaBEE0rO9mc1jioqFHBuxqUS2";
 
 
         final DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -136,10 +135,19 @@ drawer.openDrawer(Gravity.LEFT);
         } else if (id == R.id.nav_send) {
 
         }
+        else if(id == R.id.signout){
+            firebaseAuth.signOut();
+            finish();
+            startActivity(new Intent(Home.this,LoginActivity.class));
+
+        }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+    public void showToast(String message){
+        Toast.makeText(Home.this,message,Toast.LENGTH_LONG).show();
     }
 
 

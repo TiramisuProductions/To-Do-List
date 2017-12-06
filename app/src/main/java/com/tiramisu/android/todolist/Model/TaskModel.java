@@ -1,55 +1,28 @@
 package com.tiramisu.android.todolist.Model;
 
 
+import com.google.firebase.firestore.Exclude;
+
 /*Model for other categories except All*/
 public class TaskModel {
-    String id;
+    @Exclude String taskId;
+    String taskName;
+    boolean taskDone;
 
-    String taskName; //Name of the task
-    String dueDate;  //Date set to each task
-    String dueTime;  //Time set to each task
-    String reminder;
-    String done;
+    public TaskModel() {
+    }
 
-    public TaskModel(String taskName, String dueDate, String dueTime, String reminder, String done) {
+    public TaskModel(String taskName, boolean taskDone) {
         this.taskName = taskName;
-        this.dueDate = dueDate;
-        this.dueTime = dueTime;
-        this.reminder = reminder;
-        this.done = done;
+        this.taskDone = taskDone;
     }
 
-    public TaskModel(String id, String taskName, String dueDate, String dueTime, String reminder, String done) {
-        this.id = id;
-        this.taskName = taskName;
-        this.dueDate = dueDate;
-        this.dueTime = dueTime;
-        this.reminder = reminder;
-        this.done = done;
+  @Exclude  public String getTaskId() {
+        return taskId;
     }
 
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
-    }
-
-    public String getDueDate() {
-        return dueDate;
-    }
-
-    public void setDueDate(String dueDate) {
-        this.dueDate = dueDate;
-    }
-
-    public String getDueTime() {
-        return dueTime;
-    }
-
-    public void setDueTime(String dueTime) {
-        this.dueTime = dueTime;
+   @Exclude public void setTaskId(String taskId) {
+        this.taskId = taskId;
     }
 
     public String getTaskName() {
@@ -60,21 +33,11 @@ public class TaskModel {
         this.taskName = taskName;
     }
 
-
-
-    public String getReminder() {
-        return reminder;
+    public boolean isTaskDone() {
+        return taskDone;
     }
 
-    public void setReminder(String reminder) {
-        this.reminder = reminder;
-    }
-
-    public String getDone() {
-        return done;
-    }
-
-    public void setDone(String done) {
-        this.done = done;
+    public void setTaskDone(boolean taskDone) {
+        this.taskDone = taskDone;
     }
 }

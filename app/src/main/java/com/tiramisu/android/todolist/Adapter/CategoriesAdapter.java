@@ -25,6 +25,7 @@ import com.tiramisu.android.todolist.AllTasks;
 import com.tiramisu.android.todolist.Model.CategoryModel;
 import com.tiramisu.android.todolist.Model.StaticVar;
 import com.tiramisu.android.todolist.R;
+import com.tiramisu.android.todolist.TAGS;
 import com.tiramisu.android.todolist.Tasks;
 
 import java.util.List;
@@ -35,7 +36,6 @@ import static android.support.design.R.styleable.RecyclerView;
 public class CategoriesAdapter extends RecyclerView.Adapter<CategoriesAdapter.MyView> {
     private List<CategoryModel> categoryList;
     public Activity activity;
-    DatabaseReference todoref,categoryref;
 
 
     public CategoriesAdapter(Activity activity, List<CategoryModel> categorylist) {
@@ -55,41 +55,14 @@ public class CategoriesAdapter extends RecyclerView.Adapter<CategoriesAdapter.My
 
 
 
-        holder.mTextView.setText(categoryList.get(position).getName());
+       holder.mTextView.setText(categoryList.get(position).getCategoryName());
         holder.cardView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-                if(categoryList.get(position).getId().equals("ALL"))
-                {
-                    Intent intent=new Intent(activity,AllTasks.class);
-
-                    intent.putExtra("category_name",categoryList.get(position).getName());
-                    intent.putExtra("category_id",categoryList.get(position).getId());
-                    ActivityOptionsCompat activityOptionsCompat = ActivityOptionsCompat.makeSceneTransitionAnimation(activity,holder.mTextView,"categoryname");
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-                        activity.startActivity(intent,activityOptionsCompat.toBundle());
-                    }
-                    else{
-                        activity.startActivity(intent);
-                    }
-                }
-                else{
-                    Intent intent=new Intent(activity,Tasks.class);
-                    todoref = FirebaseDatabase.getInstance().getReference("Todo");
-
-
-                    intent.putExtra("category_name",categoryList.get(position).getName());
-                    intent.putExtra("category_id",categoryList.get(position).getId());
-                    ActivityOptionsCompat activityOptionsCompat = ActivityOptionsCompat.makeSceneTransitionAnimation(activity,holder.mTextView,"categoryname");
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-                        activity.startActivity(intent,activityOptionsCompat.toBundle());
-                    }
-                    else{
-                        activity.startActivity(intent);
-                    }
-                }
-
+Intent i = new Intent(activity,Tasks.class);
+i.putExtra(TAGS.CATEGORYID,categoryList.get(position).getCategoryId());
+i.putExtra(TAGS.CATEGORYNAME,categoryList.get(position).getCategoryName());
+activity.startActivity(i);
             }
         });
     }
