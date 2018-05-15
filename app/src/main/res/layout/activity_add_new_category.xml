@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="16dp"
+    tools:context="com.tiramisu.android.todolist.AddNewCategory"
+    android:background="@color/white">
+
+    <EditText
+        android:id="@+id/searchcategory"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:maxLines="1"
+        android:inputType="text"
+        android:textColor="@color/black"
+        android:hint="Search here"
+        android:layout_marginTop="20dp" />
+
+
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/categorysearch"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="8dp"
+        android:layout_marginTop="10dp"
+        android:layout_below="@+id/searchcategory"/>
+
+    <ImageView
+        android:id="@+id/done"
+        android:layout_toLeftOf="@+id/searchcategory"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:textColor="@color/black"
+        android:layout_alignTop="@+id/searchcategory"
+        android:src="@drawable/ic_check_black_24dp" />
+
+</RelativeLayout>

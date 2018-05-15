@@ -1,0 +1,63 @@
+<resources>
+    <string name="app_name">Todolist</string>
+    <string name="title_activity_navi_drawer">NaviDrawerActivity</string>
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+
+    <string name="action_settings">Settings</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+
+    //////////////////////////////////////////////////////////////////////////////
+    <string name="title_activity_welcome">Home Screen</string>
+
+
+
+
+
+
+
+
+    <string name="play_again_desc">To see the welcome slider again, goto Settings -> apps -> welcome slider -> clear data</string>
+    <string name="play_again">Play Again</string>
+    <string name="sample_blue_title">sample_blue_title</string>
+
+    //text view
+    <string name="forgot_password">Forgot password?</string>
+    <string name="or">OR</string>
+    <string name="no_account">No account yet? Create one</string>
+    <string name="forgotPassword_text">Forgot your password?</string>
+    <string name="forgot_passwordInstructions">To reset password, enter your email, press the button and check mail to follow instruction.</string>
+    <string name="slide_1_title">Sort Your Life Out </string>
+    <string name="slide_1_description">We Bring You A Todo App thats not that complicated but just made right to suit you</string>
+    <string name="slide_2_title">Categories</string>
+    <string name="slide_2_description">Everything can be Organised with Categories </string>
+    <string name="slide_3_title">Goals ! Goals ! Goals ! </string>
+    <string name="slide_3_description">Complete Your Goals and Level Up </string>
+    <string name="slide_4_title">Permissions Please</string>
+    <string name="details">Your Details</string>
+    <string name="username_not_available">Username Not  Available :(</string>
+    <string name="username_available">Username  Available :)</string>
+    <string name="gender">Gender</string>
+    <string name="male">Male</string>
+    <string name="female">Female</string>
+    <string name="others">Others</string>
+
+    //hint
+    <string name="hint_email">Email</string>
+    <string name="hint_password">Password</string>
+    <string name="hint_name">Enter Name</string>
+    <string name="hint_username">Enter Username</string>
+
+    //button
+    <string name="login">LOGIN</string>
+    <string name="sign_in">SignUp</string>
+    <string name="sign_up">SignIn</string>
+    <string name="reset_password">Reset Password</string>
+    <string name="next">NEXT</string>
+    <string name="skip">SKIP</string>
+    <string name="start">GOT IT</string>
+
+</resources>
